@@ -1,0 +1,5 @@
+= Neural Networks PV021
+
+Project for course PV021 Neural Networks  in Masaryk University Faculty of Informatics.
+
+
