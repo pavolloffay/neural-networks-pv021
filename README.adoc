@@ -2,4 +2,8 @@
 
 Project for course PV021 Neural Networks  in Masaryk University Faculty of Informatics.
 
-
+== Build & Run
+[source,shell]
+----
+mvn install exec:java
+----
