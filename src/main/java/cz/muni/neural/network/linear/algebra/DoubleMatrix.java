@@ -1,6 +1,7 @@
 package cz.muni.neural.network.linear.algebra;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
 /**
  * @author Pavol Loffay
@@ -29,7 +30,10 @@ public class DoubleMatrix {
         this.data = new double[numberOfRows][numberOfColumns];
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
-        Arrays.fill(this.data, value);
+
+        for (int row = 0; row < numberOfRows; row++) {
+            Arrays.fill(this.data[row], value);
+        }
     }
 
     public int getNumberOfRows() {
@@ -162,7 +166,26 @@ public class DoubleMatrix {
         return new DoubleMatrix(result);
     }
 
+
+    public void computeValues(Function<Double, Double> fce) {
+
+        for(int row = 0; row < numberOfRows; row++) {
+            for (int col = 0; col < numberOfColumns; col++) {
+                this.data[row][col] = fce.apply(this.data[row][col]);
+            }
+        }
+    }
+
     public void printSize() {
         System.out.println("Size of matrix = " + numberOfRows + "x" + numberOfColumns);
+    }
+
+    @Override
+    public String toString() {
+        return "DoubleMatrix{" +
+                "numberOfColumns=" + numberOfColumns +
+                ", numberOfRows=" + numberOfRows +
+                ", data=" + Arrays.deepToString(data) +
+                '}';
     }
 }
