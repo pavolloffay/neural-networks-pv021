@@ -66,4 +66,12 @@ public class Utils {
         }
     }
 
+    public static class SigmoidGradient implements Function<Double, Double> {
+
+        @Override
+        public Double apply(Double x) {
+            return (1.0 / (1.0 + Math.exp(-x))) * (1 - (1.0 / (1.0 + Math.exp(-x))));
+        }
+    }
+
 }

@@ -12,17 +12,18 @@ public class DoubleMatrix {
     private final int numberOfRows;
     private final int numberOfColumns;
 
+
     public DoubleMatrix(double x[][]) {
         if (x == null) {
             throw new IllegalArgumentException("Array is null");
         }
 
+        this.numberOfRows = x.length;
         this.numberOfColumns = x[0].length;
-        this.numberOfRows = x[1].length;
         data = new double[numberOfRows][numberOfColumns];
 
-        for (int row = 0; row < x[0].length; row++) {
-            Arrays.copyOf(x[row], x[row].length);
+        for (int row = 0; row < numberOfRows; row++) {
+            data[row] = Arrays.copyOf(x[row], numberOfColumns);
         }
     }
 
@@ -152,7 +153,7 @@ public class DoubleMatrix {
         return new DoubleMatrix(result);
     }
 
-    public DoubleMatrix addFristRow(double value) {
+    public DoubleMatrix addFirstRow(double value) {
         int newNumberOfRows = this.numberOfRows + 1;
         double[][] result = new double[newNumberOfRows][numberOfColumns];
 
@@ -167,17 +168,25 @@ public class DoubleMatrix {
     }
 
 
-    public void computeValues(Function<Double, Double> fce) {
+    public DoubleMatrix applyOnEach(Function<Double, Double> fce) {
+
+        double[][] result = new double[numberOfRows][numberOfColumns];
 
         for(int row = 0; row < numberOfRows; row++) {
             for (int col = 0; col < numberOfColumns; col++) {
-                this.data[row][col] = fce.apply(this.data[row][col]);
+                result[row][col] = fce.apply(this.data[row][col]);
             }
         }
+
+        return new DoubleMatrix(result);
     }
 
     public void printSize() {
         System.out.println("Size of matrix = " + numberOfRows + "x" + numberOfColumns);
+    }
+
+    public DoubleMatrix copy() {
+        return new DoubleMatrix(this.data);
     }
 
     @Override

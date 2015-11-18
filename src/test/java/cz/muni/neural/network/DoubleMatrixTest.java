@@ -17,7 +17,7 @@ public class DoubleMatrixTest {
     public void testSigmoidZero() {
         DoubleMatrix doubleMatrix = new DoubleMatrix(0, 3, 4);
 
-        doubleMatrix.computeValues(new Utils.Sigmoid());
+        doubleMatrix = doubleMatrix.applyOnEach(new Utils.Sigmoid());
 
         assertThat(doubleMatrix.getByPosition(0,0), is(equalTo(0.5D)));
     }
@@ -26,7 +26,7 @@ public class DoubleMatrixTest {
     public void testSigmoidInf() {
         DoubleMatrix doubleMatrix = new DoubleMatrix(1000, 3, 4);
 
-        doubleMatrix.computeValues(new Utils.Sigmoid());
+        doubleMatrix = doubleMatrix.applyOnEach(new Utils.Sigmoid());
 
         assertThat(doubleMatrix.getByPosition(0,0), is(equalTo(1D)));
     }
@@ -35,7 +35,7 @@ public class DoubleMatrixTest {
     public void testSigmoidMinusInf() {
         DoubleMatrix doubleMatrix = new DoubleMatrix(-1000, 3, 4);
 
-        doubleMatrix.computeValues(new Utils.Sigmoid());
+        doubleMatrix = doubleMatrix.applyOnEach(new Utils.Sigmoid());
 
         assertThat(doubleMatrix.getByPosition(0,0), is(equalTo(0D)));
     }
