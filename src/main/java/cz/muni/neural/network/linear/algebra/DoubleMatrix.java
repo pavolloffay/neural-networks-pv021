@@ -1,9 +1,6 @@
 package cz.muni.neural.network.linear.algebra;
 
 import java.util.Arrays;
-import java.util.List;
-
-import cz.muni.neural.network.LabeledPoint;
 
 /**
  * @author Pavol Loffay
@@ -28,28 +25,11 @@ public class DoubleMatrix {
         }
     }
 
-    public DoubleMatrix(List<LabeledPoint> points, int numberOfColumns) {
-        if (points == null) {
-            throw new IllegalArgumentException("Points are null");
-        }
-
-        int numberOfRows = points.size();
-        double[][] matrix = new double[numberOfRows][numberOfColumns];
-
-        for (int i = 0; i < numberOfRows; i++) {
-            LabeledPoint labeledPoint = points.get(i);
-
-            if (labeledPoint.getFeatures().length != numberOfColumns) {
-                throw new IllegalArgumentException("Number of features is illegal");
-            }
-
-            // create copy of array
-            matrix[i] = Arrays.copyOf(labeledPoint.getFeatures(), numberOfColumns);
-        }
-
-        this.data = matrix;
+    public DoubleMatrix(double value, int numberOfRows, int numberOfColumns) {
+        this.data = new double[numberOfRows][numberOfColumns];
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
+        Arrays.fill(this.data, value);
     }
 
     public int getNumberOfRows() {
@@ -124,5 +104,65 @@ public class DoubleMatrix {
         }
 
         return new DoubleMatrix(result);
+    }
+
+    public DoubleMatrix substract(DoubleMatrix that) {
+        if (this.numberOfRows != that.getNumberOfRows() ||
+                this.numberOfColumns != that.getNumberOfColumns()) {
+            throw new IllegalArgumentException("Matrix size does not match for subtraction");
+        }
+
+        double[][] result = new double[numberOfRows][numberOfColumns];
+        for (int row = 0; row < numberOfRows; row++) {
+            for (int col = 0; col < numberOfColumns; col++) {
+                result[row][col] = this.data[row][col] - that.getByPosition(row, col);
+            }
+        }
+
+        return new DoubleMatrix(result);
+    }
+
+    public DoubleMatrix scalarSubstract(double scalar) {
+        double[][] result = new double[numberOfRows][numberOfColumns];
+        for (int row = 0; row < numberOfRows; row++) {
+            for (int col = 0; col < numberOfColumns; col++) {
+                result[row][col] = this.data[row][col] - scalar;
+            }
+        }
+
+        return new DoubleMatrix(result);
+    }
+
+    public DoubleMatrix addFirstColumn(double value) {
+
+        int newNumberOfColumns = this.numberOfColumns + 1;
+        double[][] result = new double[numberOfRows][newNumberOfColumns];
+
+        for (int row = 0; row < numberOfRows; row++) {
+            for (int col = 0; col < newNumberOfColumns; col++) {
+
+                result[row][col] = col == 0 ? value : result[row][col - 1];
+            }
+        }
+
+        return new DoubleMatrix(result);
+    }
+
+    public DoubleMatrix addFristRow(double value) {
+        int newNumberOfRows = this.numberOfRows + 1;
+        double[][] result = new double[newNumberOfRows][numberOfColumns];
+
+        for (int row = 0; row < newNumberOfRows; row++) {
+            for (int col = 0; col < numberOfColumns; col++) {
+
+                result[row][col] = row == 0 ? value : result[row - 1][col];
+            }
+        }
+
+        return new DoubleMatrix(result);
+    }
+
+    public void printSize() {
+        System.out.println("Size of matrix = " + numberOfRows + "x" + numberOfColumns);
     }
 }
