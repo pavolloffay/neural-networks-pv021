@@ -19,7 +19,7 @@ public class DoubleMatrixTest {
 
         doubleMatrix = doubleMatrix.applyOnEach(new Utils.Sigmoid());
 
-        assertThat(doubleMatrix.getByPosition(0,0), is(equalTo(0.5D)));
+        assertThat(doubleMatrix.getByIndex(0,0), is(equalTo(0.5D)));
     }
 
     @Test
@@ -28,7 +28,7 @@ public class DoubleMatrixTest {
 
         doubleMatrix = doubleMatrix.applyOnEach(new Utils.Sigmoid());
 
-        assertThat(doubleMatrix.getByPosition(0,0), is(equalTo(1D)));
+        assertThat(doubleMatrix.getByIndex(0,0), is(equalTo(1D)));
     }
 
     @Test
@@ -37,6 +37,52 @@ public class DoubleMatrixTest {
 
         doubleMatrix = doubleMatrix.applyOnEach(new Utils.Sigmoid());
 
-        assertThat(doubleMatrix.getByPosition(0,0), is(equalTo(0D)));
+        assertThat(doubleMatrix.getByIndex(0,0), is(equalTo(0D)));
+    }
+
+    @Test
+    public void testTranspose1x1() {
+        double[][] x = new double[][]{{1}};
+        DoubleMatrix doubleMatrix = new DoubleMatrix(x);
+        doubleMatrix = doubleMatrix.transpose();
+
+        double[][] expected = new double[][]{{1}};
+        assertThat(doubleMatrix.isTheSameAs(new DoubleMatrix(expected)), is(Boolean.TRUE));
+    }
+
+    @Test
+    public void testTranspose3x3() {
+        double[][] x = new double[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        DoubleMatrix doubleMatrix = new DoubleMatrix(x);
+        doubleMatrix = doubleMatrix.transpose();
+
+        double[][] expected = new double[][]{{1, 4, 7}, {2, 5, 8}, {3, 6, 9}};
+        assertThat(doubleMatrix.isTheSameAs(new DoubleMatrix(expected)), is(Boolean.TRUE));
+
+    }
+
+    @Test
+    public void testTranspose3x2() {
+        double[][] x = new double[][]{{1, 2}, {3, 4}, {5, 6}};
+        DoubleMatrix doubleMatrix = new DoubleMatrix(x);
+        doubleMatrix = doubleMatrix.transpose();
+
+        double[][] expected = new double[][]{{1, 3, 5}, {2, 4, 6}};
+        assertThat(doubleMatrix.isTheSameAs(new DoubleMatrix(expected)), is(Boolean.TRUE));
+    }
+    // todo test transpose 2x3
+
+    @Test
+    public void testMultiply() {
+        double[][] aData = new double[][]{{1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
+        DoubleMatrix a = new DoubleMatrix(aData);
+
+        double[][] bData = new double[][]{{2}, {2}, {2}};
+        DoubleMatrix b = new DoubleMatrix(bData);
+
+        DoubleMatrix y = a.matrixMultiply(b);
+
+        double[][] expected = new double[][]{{6}, {12}, {18}};
+        assertThat(y.isTheSameAs(new DoubleMatrix(expected)), is(Boolean.TRUE));
     }
 }

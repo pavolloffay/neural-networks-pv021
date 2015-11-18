@@ -45,8 +45,12 @@ public class DoubleMatrix {
         return numberOfColumns;
     }
 
-    public double getByPosition(int row, int col) {
+    public double getByIndex(int row, int col) {
         return this.data[row][col];
+    }
+
+    public void setByIndex(double value, int row, int col) {
+        this.data[row][col] = value;
     }
 
     public DoubleMatrix transpose() {
@@ -78,13 +82,13 @@ public class DoubleMatrix {
             throw new IllegalArgumentException("Matrix size does not match for multiplication");
         }
 
-        double result[][] = new double[this.getNumberOfRows()][that.getNumberOfColumns()];
-        for (int row = 0; row < this.getNumberOfRows(); row++) {
+        double result[][] = new double[this.numberOfRows][that.getNumberOfColumns()];
+        for (int row = 0; row < this.numberOfRows; row++) {
             for (int col = 0; col < that.getNumberOfColumns(); col++) {
 
                 double sum = 0;
-                for (int i = 0; i < that.getNumberOfColumns(); i++) {
-                    sum += this.data[row][i] * that.getByPosition(i, col);
+                for (int i = 0; i < this.numberOfColumns; i++) {
+                    sum += this.data[row][i] * that.getByIndex(i, col);
                 }
 
                 result[row][col] = sum;
@@ -104,7 +108,7 @@ public class DoubleMatrix {
 
         for (int row = 0; row < numberOfRows; row++) {
             for (int col = 0; col < numberOfColumns; col++) {
-                result[row][col] = this.data[row][col] * that.getByPosition(row, col);
+                result[row][col] = this.data[row][col] * that.getByIndex(row, col);
             }
         }
 
@@ -120,7 +124,7 @@ public class DoubleMatrix {
         double[][] result = new double[numberOfRows][numberOfColumns];
         for (int row = 0; row < numberOfRows; row++) {
             for (int col = 0; col < numberOfColumns; col++) {
-                result[row][col] = this.data[row][col] - that.getByPosition(row, col);
+                result[row][col] = this.data[row][col] - that.getByIndex(row, col);
             }
         }
 
@@ -187,6 +191,23 @@ public class DoubleMatrix {
 
     public DoubleMatrix copy() {
         return new DoubleMatrix(this.data);
+    }
+
+    public boolean isTheSameAs(DoubleMatrix that) {
+        if (this.numberOfRows != that.getNumberOfRows() ||
+                this.getNumberOfColumns() != that.getNumberOfColumns()) {
+            return false;
+        }
+
+        for (int row = 0; row < numberOfRows; row++) {
+            for (int col = 0; col < numberOfColumns; col++) {
+                if (data[row][col] != that.getByIndex(row, col)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override
