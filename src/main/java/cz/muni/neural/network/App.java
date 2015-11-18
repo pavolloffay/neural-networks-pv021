@@ -1,4 +1,4 @@
-package cz.muni.neural.network.forecast;
+package cz.muni.neural.network;
 
 /**
  * @author Pavol Loffay

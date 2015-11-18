@@ -23,7 +23,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.4.0</version>
         <configuration>
-          <mainClass>cz.muni.neural.network.forecast.App</mainClass>
+          <mainClass>cz.muni.neural.network.App</mainClass>
         </configuration>
       </plugin>
     </plugins>
