@@ -95,8 +95,8 @@ public class NeuralNetwork {
             // back propagation
             for (int layer = numOfLayers - 1; layer >= 0; layer++) {
                 if (layer == numOfLayers - 1) {
-                    DoubleMatrix lastDelta = null;
-                    deltas.add(lastDelta);
+                    DoubleMatrix lastDelta = null; //todo
+                    deltas.set(layer, lastDelta);
                 }
 
                 DoubleMatrix sigmoidGradient = zetas.get(layer).applyOnEach(hypothesisDer);
