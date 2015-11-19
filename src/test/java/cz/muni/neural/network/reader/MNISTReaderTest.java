@@ -36,6 +36,8 @@ public class MNISTReaderTest {
         int count = 10;
         List<LabeledPoint> labeledPointList = MNISTReader.read(IMAGES_PATH, LABELS_PATH, count);
 
+//        labeledPointList.forEach(x -> System.out.println(x));
+
         assertThat(labeledPointList.size(), is(count));
     }
 }

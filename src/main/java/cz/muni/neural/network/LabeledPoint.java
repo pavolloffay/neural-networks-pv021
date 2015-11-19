@@ -21,4 +21,11 @@ public class LabeledPoint {
     public double[] getFeatures() {
         return features;
     }
+
+    @Override
+    public String toString() {
+        return "LabeledPoint{" +
+                "label=" + label +
+                '}';
+    }
 }

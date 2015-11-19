@@ -31,7 +31,7 @@ public class NeuralNetwork {
         this.gradientAlpha = gradientAlpha;
         this.gradientNumberOfIter = gradientNumberOfIter;
 
-        thetas = createThetas(true);
+        this.thetas = createThetas(true);
     }
 
     public List<Layer> getLayers() {
@@ -135,7 +135,7 @@ public class NeuralNetwork {
                     Utils.randomMatrix(EPSILON_INIT_THETA, rows, cols) :
                     new DoubleMatrix(0, rows, cols);
 
-            thetas.set(layer, theta);
+            thetas.add(theta);
         }
 
         return thetas;
