@@ -39,6 +39,7 @@ public class NeuralNetwork {
         List<DoubleMatrix> zetas = new ArrayList<>(numOfLayers - 1);
         List<DoubleMatrix> activations = new ArrayList<>(numOfLayers -1);
         List<DoubleMatrix> deltas = new ArrayList<>(numOfLayers - 1);
+        List<DoubleMatrix> thetasGrad = new ArrayList<>(numOfLayers -1);
 
         for (LabeledPoint labeledPoint: labeledPoints) {
             if (labeledPoint.getFeatures().length != layers.get(0).getNumberOfUnits()) {
@@ -72,8 +73,14 @@ public class NeuralNetwork {
 
                 DoubleMatrix delta = thetas.get(layer).transpose().matrixMultiply(deltas.get(layer + 1));
                 delta = delta.multiplyByElements(sigmoidGradient);
-                //todo delta(2:end)
-                // todo theta_grad
+                delta = delta.removeFirstRow();
+
+                DoubleMatrix thetaGrad = thetasGrad.get(layer);
+                DoubleMatrix thetaGradMul = delta.matrixMultiply(activations.get(layer).transpose());
+                thetaGrad = thetaGrad.sum(thetaGradMul);
+                thetaGrad = thetaGrad.scalarMultiply(labeledPoints.size());
+                thetasGrad.set(layer, thetaGrad);
+                // TODO Regularization - Lambda
             }
         }
     }

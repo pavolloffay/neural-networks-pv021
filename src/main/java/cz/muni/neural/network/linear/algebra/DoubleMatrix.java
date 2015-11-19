@@ -142,6 +142,22 @@ public class DoubleMatrix {
         return new DoubleMatrix(result);
     }
 
+    public DoubleMatrix sum(DoubleMatrix that) {
+        if (this.numberOfRows != that.getNumberOfRows() ||
+                this.numberOfColumns != that.getNumberOfColumns()) {
+            throw new IllegalArgumentException("Matrix size does not match for subtraction");
+        }
+
+        double[][] result = new double[numberOfRows][numberOfColumns];
+        for (int row = 0; row < numberOfRows; row++) {
+            for (int col = 0; col < numberOfColumns; col++) {
+                result[row][col] = this.data[row][col] + that.getByIndex(row, col);
+            }
+        }
+
+        return new DoubleMatrix(result);
+    }
+
     public DoubleMatrix addFirstColumn(double value) {
 
         int newNumberOfColumns = this.numberOfColumns + 1;

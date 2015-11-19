@@ -104,8 +104,8 @@ public class DoubleMatrixTest {
         DoubleMatrix a = new DoubleMatrix(aData);
 
         try {
-            a = a.removeFirstRow();
-            Assert.fail("Should not be possible to create an entity with a property called \"name\".");
+            a.removeFirstRow();
+            Assert.fail("remove row from 1xX should fail");
         } catch (IllegalArgumentException ex) {
             //ok
         }
@@ -117,5 +117,18 @@ public class DoubleMatrixTest {
         DoubleMatrix doubleMatrix = new DoubleMatrix(vectorData);
 
         assertThat(doubleMatrix.isTheSameAs(new DoubleMatrix(vectorData)), is(Boolean.TRUE));
+    }
+
+    @Test
+    public void testSum3x3() {
+        double[][] vectorA = new double[][]{{1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
+        DoubleMatrix a = new DoubleMatrix(vectorA);
+        double[][] vectorB = new double[][]{{1, 1, 1}, {1, 1, 1}, {1, 1, 1}};
+        DoubleMatrix b = new DoubleMatrix(vectorB);
+
+        DoubleMatrix result = a.sum(b);
+
+        double[][] expected = new double[][]{{2, 2, 2}, {3, 3, 3}, {4, 4, 4}};
+        assertThat(result.isTheSameAs(new DoubleMatrix(expected)), is(Boolean.TRUE));
     }
 }
