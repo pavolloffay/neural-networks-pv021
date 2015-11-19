@@ -21,16 +21,18 @@ public class NeuralNetwork {
 
     private final double gradientAlpha;
     private final long gradientNumberOfIter;
+    private final double lambdaRegul;
 
     private List<DoubleMatrix> thetas;
 
     private List<LabeledPoint> labeledPoints;
 
-    public NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter) {
+    public NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, double lambdaRegul) {
         this.layers = layers;
         this.numOfLayers = layers.size();
         this.gradientAlpha = gradientAlpha;
         this.gradientNumberOfIter = gradientNumberOfIter;
+        this.lambdaRegul = lambdaRegul;
 
         this.thetas = createThetas(true);
     }
@@ -97,6 +99,7 @@ public class NeuralNetwork {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     private List<DoubleMatrix> thetasGrad() {
 
         List<DoubleMatrix> thetasGrad = createThetas(false);
@@ -153,6 +156,15 @@ public class NeuralNetwork {
             }
         }
 
+        double regul = lambdaRegul / labeledPoints.size();
+        for (int i = 0; i < thetasGrad.size(); i++) {
+            DoubleMatrix thetaGrad = thetasGrad.get(i);
+
+            DoubleMatrix thetaRegul = thetas.get(i).removeFirstColumn().addFirstColumn(0).scalarMultiply(regul);
+            thetaGrad = thetaGrad.sum(thetaRegul);
+
+            thetasGrad.set(i, thetaGrad);
+        }
         return thetasGrad;
     }
 

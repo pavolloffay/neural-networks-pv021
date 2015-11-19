@@ -17,8 +17,9 @@ public class NeuralNetworkTest {
 
         int TRAIN = 700;
         int TEST = 30;
-        double ALPHA = 0.01;
-        int ITER = 50;
+        double ALPHA = 0.05;
+        int ITER = 100;
+        double LAMBDA = 1100;
 
         List<LabeledPoint> trainPoints = MNISTReader.read(TestUtils.IMAGES_TRAIN_PATH,
                 TestUtils.LABELS_TRAIN_PATH, TRAIN);
@@ -27,8 +28,8 @@ public class NeuralNetworkTest {
         /**
          * train
          */
-        List<Layer> layers = TestUtils.create3Layers(features, new int[]{7, 10});
-        NeuralNetwork network = new NeuralNetwork(layers, ALPHA, ITER);
+        List<Layer> layers = TestUtils.create3Layers(features, new int[]{25, 10});
+        NeuralNetwork network = new NeuralNetwork(layers, ALPHA, ITER, LAMBDA);
         network.train(trainPoints);
 
         /**

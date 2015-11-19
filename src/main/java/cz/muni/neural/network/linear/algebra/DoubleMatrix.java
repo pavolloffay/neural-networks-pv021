@@ -202,7 +202,23 @@ public class DoubleMatrix {
         }
 
         return new DoubleMatrix(result);
+    }
 
+    public DoubleMatrix removeFirstColumn() {
+        if (this.numberOfColumns == 1) {
+            throw new IllegalArgumentException("Matrix is too small");
+        }
+
+        int newNumberOfColumns = this.numberOfColumns - 1;
+        double[][] result = new double[numberOfRows][newNumberOfColumns];
+
+        for (int row = 0; row < numberOfRows; row++) {
+            for (int col = 0; col < newNumberOfColumns; col++) {
+                result[row][col] = this.data[row][col + 1];
+            }
+        }
+
+        return new DoubleMatrix(result);
     }
 
     public double[] maxValueInRow() {
