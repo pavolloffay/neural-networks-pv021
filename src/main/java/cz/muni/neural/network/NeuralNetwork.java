@@ -11,6 +11,7 @@ import cz.muni.neural.network.linear.algebra.DoubleMatrix;
  */
 public class NeuralNetwork {
     private static final double EPSILON_INIT_THETA = 0.12D;
+    private static final double BIAS = 1D;
 
     private Function<Double, Double> hypothesis = new Functions.Sigmoid();
     private Function<Double, Double> hypothesisDer = new Functions.SigmoidGradient();
@@ -51,13 +52,14 @@ public class NeuralNetwork {
     private void gradientDescent() {
 
         for (int i = 0; i < gradientNumberOfIter; i++) {
-            List<DoubleMatrix> thetasGrad = thetasGrad();
 
             for (int layer = 0; layer < numOfLayers - 1; layer++) {
+
                 DoubleMatrix theta = thetas.get(layer);
+                List<DoubleMatrix> thetasGrad = thetasGrad();
 
                 DoubleMatrix thetaGrad = thetasGrad.get(layer).scalarMultiply(gradientAlpha);
-                theta = theta.substract(thetaGrad);
+                theta = theta.subtract(thetaGrad);
 
                 thetas.set(layer, theta);
             }
@@ -77,27 +79,32 @@ public class NeuralNetwork {
                 throw new IllegalArgumentException("Labeled point has wrong number of features");
             }
 
+            DoubleMatrix a1 = Utils.labeledPointToDoubleMatrix(labeledPoint);
+            a1 = a1.transpose();
+            a1 = a1.addFirstRow(BIAS);
+            activations.add(a1);
+
             // forward propagation
             for (int layer = 0; layer < numOfLayers - 1; layer++) {
-                if (layer == 1) {
-                    DoubleMatrix a1 = Utils.labeledPointToDoubleMatrix(labeledPoint);
-                    activations.add(a1);
-                    continue;
+
+                DoubleMatrix zet = thetas.get(layer).matrixMultiply(activations.get(layer));
+                DoubleMatrix activation = zet.applyOnEach(hypothesis);
+
+                if (layer < numOfLayers - 2) {
+                    // skip last
+                    activation = activation.addFirstRow(1);
                 }
 
-                DoubleMatrix zLayer = thetas.get(layer).matrixMultiply(activations.get(layer - 1));
-                DoubleMatrix aLayer = zLayer.applyOnEach(hypothesis);
-                aLayer = aLayer.addFirstRow(1); //add bias todo do not do it for last
-
-                activations.add(aLayer);
-                zetas.add(zLayer);
+                activations.add(activation);
+                zetas.add(zet);
             }
+
+
             // back propagation
-            for (int layer = numOfLayers - 1; layer >= 0; layer++) {
-                if (layer == numOfLayers - 1) {
-                    DoubleMatrix lastDelta = null; //todo
-                    deltas.set(layer, lastDelta);
-                }
+            DoubleMatrix lastDelta = logicalResultColumnVector(labeledPoint)
+                    .subtract(activations.get(numOfLayers - 1));
+            deltas.add(lastDelta);
+            for (int layer = numOfLayers - 4; layer >= 0; layer++) {
 
                 DoubleMatrix sigmoidGradient = zetas.get(layer).applyOnEach(hypothesisDer);
                 sigmoidGradient = sigmoidGradient.addFirstRow(1);
@@ -111,11 +118,23 @@ public class NeuralNetwork {
                 thetaGrad = thetaGrad.sum(thetaGradMul);
                 thetaGrad = thetaGrad.scalarMultiply(labeledPoints.size());
                 thetasGrad.set(layer, thetaGrad);
+
                 // TODO Regularization - Lambda
             }
         }
 
         return thetasGrad;
+    }
+
+    private DoubleMatrix logicalResultColumnVector(LabeledPoint labeledPoint) {
+        int numberOfClasses = layers.get(layers.size() -1).getNumberOfUnits();
+
+        double[][] arr = new double[numberOfClasses][1];
+        for (int col = 0; col < numberOfClasses; col++) {
+            arr[col][0] = labeledPoint.getLabel() == col ? 1D : 0D;
+        }
+
+        return new DoubleMatrix(arr);
     }
 
     /**
@@ -129,7 +148,7 @@ public class NeuralNetwork {
         for (int layer = 0; layer < numOfLayers - 1; layer++) {
 
             int rows = layers.get(layer + 1).getNumberOfUnits();
-            int cols =   layers.get(layer).getNumberOfUnits();
+            int cols =   layers.get(layer).getNumberOfUnits() + 1;
 
             DoubleMatrix theta = random ?
                     Utils.randomMatrix(EPSILON_INIT_THETA, rows, cols) :

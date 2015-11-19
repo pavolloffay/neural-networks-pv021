@@ -115,7 +115,7 @@ public class DoubleMatrix {
         return new DoubleMatrix(result);
     }
 
-    public DoubleMatrix substract(DoubleMatrix that) {
+    public DoubleMatrix subtract(DoubleMatrix that) {
         if (this.numberOfRows != that.getNumberOfRows() ||
                 this.numberOfColumns != that.getNumberOfColumns()) {
             throw new IllegalArgumentException("Matrix size does not match for subtraction");
