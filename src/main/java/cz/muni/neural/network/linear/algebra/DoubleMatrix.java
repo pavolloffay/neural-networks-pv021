@@ -98,7 +98,7 @@ public class DoubleMatrix {
        return new DoubleMatrix(result);
     }
 
-    public DoubleMatrix multiplyByElemets(DoubleMatrix that) {
+    public DoubleMatrix multiplyByElements(DoubleMatrix that) {
         if (this.numberOfRows != that.getNumberOfRows() ||
                 this.numberOfColumns != that.getNumberOfColumns()) {
             throw new IllegalArgumentException("Matrix size does not match for multipleByElements");
@@ -171,6 +171,23 @@ public class DoubleMatrix {
         return new DoubleMatrix(result);
     }
 
+    public DoubleMatrix removeFirstRow() {
+        if (this.numberOfRows == 1) {
+            throw new IllegalArgumentException("Matrix is too small");
+        }
+
+        int newNumberOfRows = this.numberOfRows - 1;
+        double[][] result = new double[newNumberOfRows][numberOfColumns];
+
+        for (int row = 0; row < newNumberOfRows; row++) {
+            for (int col = 0; col < numberOfColumns; col++) {
+                result[row][col] = this.data[row + 1][col];
+            }
+        }
+
+        return new DoubleMatrix(result);
+
+    }
 
     public DoubleMatrix applyOnEach(Function<Double, Double> fce) {
 
@@ -183,10 +200,6 @@ public class DoubleMatrix {
         }
 
         return new DoubleMatrix(result);
-    }
-
-    public void printSize() {
-        System.out.println("Size of matrix = " + numberOfRows + "x" + numberOfColumns);
     }
 
     public DoubleMatrix copy() {
@@ -208,6 +221,10 @@ public class DoubleMatrix {
         }
 
         return true;
+    }
+
+    public void printSize() {
+        System.out.println("Size of matrix = " + numberOfRows + "x" + numberOfColumns);
     }
 
     @Override

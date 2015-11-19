@@ -3,7 +3,6 @@ package cz.muni.neural.network;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 
 import cz.muni.neural.network.linear.algebra.DoubleMatrix;
 
@@ -57,21 +56,6 @@ public class Utils {
         }
 
         return new DoubleMatrix(result);
-    }
-
-    public static class Sigmoid implements Function<Double, Double> {
-
-        public Double apply(Double x) {
-            return 1.0 / (1.0 + Math.exp(-x));
-        }
-    }
-
-    public static class SigmoidGradient implements Function<Double, Double> {
-
-        @Override
-        public Double apply(Double x) {
-            return (1.0 / (1.0 + Math.exp(-x))) * (1 - (1.0 / (1.0 + Math.exp(-x))));
-        }
     }
 
 }

@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import cz.muni.neural.network.linear.algebra.DoubleMatrix;
@@ -17,7 +18,7 @@ public class DoubleMatrixTest {
     public void testSigmoidZero() {
         DoubleMatrix doubleMatrix = new DoubleMatrix(0, 3, 4);
 
-        doubleMatrix = doubleMatrix.applyOnEach(new Utils.Sigmoid());
+        doubleMatrix = doubleMatrix.applyOnEach(new Functions.Sigmoid());
 
         assertThat(doubleMatrix.getByIndex(0,0), is(equalTo(0.5D)));
     }
@@ -26,7 +27,7 @@ public class DoubleMatrixTest {
     public void testSigmoidInf() {
         DoubleMatrix doubleMatrix = new DoubleMatrix(1000, 3, 4);
 
-        doubleMatrix = doubleMatrix.applyOnEach(new Utils.Sigmoid());
+        doubleMatrix = doubleMatrix.applyOnEach(new Functions.Sigmoid());
 
         assertThat(doubleMatrix.getByIndex(0,0), is(equalTo(1D)));
     }
@@ -35,7 +36,7 @@ public class DoubleMatrixTest {
     public void testSigmoidMinusInf() {
         DoubleMatrix doubleMatrix = new DoubleMatrix(-1000, 3, 4);
 
-        doubleMatrix = doubleMatrix.applyOnEach(new Utils.Sigmoid());
+        doubleMatrix = doubleMatrix.applyOnEach(new Functions.Sigmoid());
 
         assertThat(doubleMatrix.getByIndex(0,0), is(equalTo(0D)));
     }
@@ -84,5 +85,37 @@ public class DoubleMatrixTest {
 
         double[][] expected = new double[][]{{6}, {12}, {18}};
         assertThat(y.isTheSameAs(new DoubleMatrix(expected)), is(Boolean.TRUE));
+    }
+
+    @Test
+    public void testRemoveFirstRow3x3() {
+        double[][] aData = new double[][]{{1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
+        DoubleMatrix a = new DoubleMatrix(aData);
+        a = a.removeFirstRow();
+
+
+        double[][] expected = new double[][]{{2, 2, 2}, {3, 3, 3}};
+        assertThat(a.isTheSameAs(new DoubleMatrix(expected)), is(Boolean.TRUE));
+    }
+
+    @Test
+    public void testRemoveFirstRow1x3() {
+        double[][] aData = new double[][]{{1, 1, 1}};
+        DoubleMatrix a = new DoubleMatrix(aData);
+
+        try {
+            a = a.removeFirstRow();
+            Assert.fail("Should not be possible to create an entity with a property called \"name\".");
+        } catch (IllegalArgumentException ex) {
+            //ok
+        }
+    }
+
+    @Test
+    public void testVectorCreation() {
+        double[][] vectorData = new double[][]{{1, 1, 1}};
+        DoubleMatrix doubleMatrix = new DoubleMatrix(vectorData);
+
+        assertThat(doubleMatrix.isTheSameAs(new DoubleMatrix(vectorData)), is(Boolean.TRUE));
     }
 }

@@ -12,8 +12,8 @@ import cz.muni.neural.network.linear.algebra.DoubleMatrix;
 public class NeuralNetwork {
     private static final double EPSILON_INIT_THETA = 0.12D;
 
-    private Function<Double, Double> hypothesis = new Utils.Sigmoid();
-    private Function<Double, Double> hypothesisDer = new Utils.SigmoidGradient();
+    private Function<Double, Double> hypothesis = new Functions.Sigmoid();
+    private Function<Double, Double> hypothesisDer = new Functions.SigmoidGradient();
 
     private final List<Layer> layers;
     private final int numOfLayers;
@@ -71,7 +71,7 @@ public class NeuralNetwork {
                 sigmoidGradient = sigmoidGradient.addFirstRow(1);
 
                 DoubleMatrix delta = thetas.get(layer).transpose().matrixMultiply(deltas.get(layer + 1));
-                delta = delta.multiplyByElemets(sigmoidGradient);
+                delta = delta.multiplyByElements(sigmoidGradient);
                 //todo delta(2:end)
                 // todo theta_grad
             }
