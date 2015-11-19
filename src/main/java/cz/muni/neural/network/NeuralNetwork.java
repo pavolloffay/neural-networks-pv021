@@ -69,15 +69,16 @@ public class NeuralNetwork {
 
             if (layer < numOfLayers - 2) {
                 // skip last
-                activation = activation.addFirstRow(1);
+                activation = activation.addFirstRow(BIAS);
             }
 
             zetas.add(zet);
             activations.add(activation);
         }
 
-//        activations.get(numOfLayers - 1).printSize();
-        return activations.get(numOfLayers - 1).maxValueInRow();
+        System.out.println(activations.get(activations.size() -1));
+//        activations.get(activations).printSize();
+        return activations.get(activations.size() - 1).maxValueInRow();
     }
 
     private void gradientDescent() {
@@ -86,10 +87,10 @@ public class NeuralNetwork {
 
             for (int layer = 0; layer < numOfLayers - 1; layer++) {
 
-                DoubleMatrix theta = thetas.get(layer);
                 List<DoubleMatrix> thetasGrad = thetasGrad();
+                DoubleMatrix thetaGrad = thetasGrad.get(layer).scalarMultiply(gradientAlpha / labeledPoints.size());
 
-                DoubleMatrix thetaGrad = thetasGrad.get(layer).scalarMultiply(gradientAlpha);
+                DoubleMatrix theta = thetas.get(layer);
                 theta = theta.subtract(thetaGrad);
 
                 thetas.set(layer, theta);
@@ -137,7 +138,7 @@ public class NeuralNetwork {
             DoubleMatrix lastDelta = logicalResultColumnVector(labeledPoint)
                     .subtract(activations.get(numOfLayers - 1));
             deltas.add(lastDelta);
-            for (int layer = numOfLayers - 4; layer >= 0; layer++) {
+            for (int layer = numOfLayers - 4; layer >= 0; layer--) {
 
                 DoubleMatrix sigmoidGradient = zetas.get(layer).applyOnEach(hypothesisDer);
                 sigmoidGradient = sigmoidGradient.addFirstRow(1);
@@ -151,11 +152,12 @@ public class NeuralNetwork {
                 thetaGrad = thetaGrad.sum(thetaGradMul);
                 thetaGrad = thetaGrad.scalarMultiply(labeledPoints.size());
                 thetasGrad.set(layer, thetaGrad);
-
-                // TODO Regularization - Lambda
             }
         }
 
+        /**
+         * Regularization
+         */
         double regul = lambdaRegul / labeledPoints.size();
         for (int i = 0; i < thetasGrad.size(); i++) {
             DoubleMatrix thetaGrad = thetasGrad.get(i);
@@ -185,7 +187,7 @@ public class NeuralNetwork {
      * @return
      */
     private List<DoubleMatrix> createThetas(boolean random) {
-        List<DoubleMatrix> thetas = new ArrayList<>(numOfLayers - 1);
+        List<DoubleMatrix> thetasReturn = new ArrayList<>(numOfLayers - 1);
 
         for (int layer = 0; layer < numOfLayers - 1; layer++) {
 
@@ -196,9 +198,9 @@ public class NeuralNetwork {
                     Utils.randomMatrix(EPSILON_INIT_THETA, rows, cols) :
                     new DoubleMatrix(0, rows, cols);
 
-            thetas.add(theta);
+            thetasReturn.add(theta);
         }
 
-        return thetas;
+        return thetasReturn;
     }
 }

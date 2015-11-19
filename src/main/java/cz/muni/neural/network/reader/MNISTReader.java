@@ -47,19 +47,17 @@ public class MNISTReader {
         int numImagesRead = 0;
         while (labels.available() > 0 && numLabelsRead < numLabels && numberOfPoints-- > 0) {
 
-            double[] features = new double[numCols * numRows];
             byte label = labels.readByte();
             numLabelsRead++;
             int[][] image = new int[numCols][numRows];
             for (int colIdx = 0; colIdx < numCols; colIdx++) {
                 for (int rowIdx = 0; rowIdx < numRows; rowIdx++) {
                     image[colIdx][rowIdx] = images.readUnsignedByte();
-
-                    features[colIdx*rowIdx + rowIdx] = image[colIdx][rowIdx];
                 }
             }
+
             numImagesRead++;
-            LabeledPoint labeledPoint = new LabeledPoint(label, features);
+            LabeledPoint labeledPoint = new LabeledPoint(label, imageToArray(image));
             labeledPoints.add(labeledPoint);
 
             // At this point, 'label' and 'image' agree and you can do whatever you like with them.
@@ -85,5 +83,19 @@ public class MNISTReader {
                 .println("Read " + numLabelsRead + " samples in " + minutes + " m " + seconds + " s ");
 
         return labeledPoints;
+    }
+
+    private static double[] imageToArray(int[][] image) {
+        double[] result = new double[image.length * image[0].length];
+
+        int columns = image[0].length;
+
+        for (int i = 0; i < image.length; i++) {
+            for (int j = 0; j < image[0].length; j++) {
+                result[i*columns + j] = image[i][j];
+            }
+        }
+
+        return result;
     }
 }

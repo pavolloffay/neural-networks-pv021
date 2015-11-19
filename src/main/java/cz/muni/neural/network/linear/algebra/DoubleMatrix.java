@@ -166,7 +166,7 @@ public class DoubleMatrix {
         for (int row = 0; row < numberOfRows; row++) {
             for (int col = 0; col < newNumberOfColumns; col++) {
 
-                result[row][col] = col == 0 ? value : result[row][col - 1];
+                result[row][col] = col == 0 ? value : this.data[row][col - 1];
             }
         }
 
@@ -180,7 +180,7 @@ public class DoubleMatrix {
         for (int row = 0; row < newNumberOfRows; row++) {
             for (int col = 0; col < numberOfColumns; col++) {
 
-                result[row][col] = row == 0 ? value : result[row - 1][col];
+                result[row][col] = row == 0 ? value : this.data[row - 1][col];
             }
         }
 
