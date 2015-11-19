@@ -39,7 +39,7 @@ public class MNISTReader {
             System.exit(0);
         }
 
-
+        System.out.println("Size of image = " + numRows + "x" + numCols);
         List<LabeledPoint> labeledPoints = new ArrayList<>(numberOfPoints);
 
         long start = System.currentTimeMillis();
@@ -47,7 +47,7 @@ public class MNISTReader {
         int numImagesRead = 0;
         while (labels.available() > 0 && numLabelsRead < numLabels && numberOfPoints-- > 0) {
 
-            double[] features = new double[numCols * numLabels];
+            double[] features = new double[numCols * numRows];
             byte label = labels.readByte();
             numLabelsRead++;
             int[][] image = new int[numCols][numRows];

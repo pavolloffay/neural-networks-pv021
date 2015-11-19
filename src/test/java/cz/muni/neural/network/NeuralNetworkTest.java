@@ -23,8 +23,8 @@ public class NeuralNetworkTest {
     @Test
     public void testCreation() throws Exception {
 
-        List<LabeledPoint> labeledPointList = MNISTReader.read(MNISTReaderTest.IMAGES_PATH,
-                MNISTReaderTest.LABELS_PATH, NUMBER_OF_TRAINING_EXAMPLES);
+        List<LabeledPoint> labeledPointList = MNISTReader.read(MNISTReaderTest.IMAGES_TEST_PATH,
+                MNISTReaderTest.LABELS_TEST_PATH, NUMBER_OF_TRAINING_EXAMPLES);
 
         int features = labeledPointList.get(0).getFeatures().length;
 
@@ -37,9 +37,8 @@ public class NeuralNetworkTest {
         layers.add(layer2);
         layers.add(layer3);
 
-
         NeuralNetwork network = new NeuralNetwork(layers, GRADIENT_ALPHA, GRADIENT_NUM_ITER);
-//        network.train(labeledPointList);
+        network.train(labeledPointList);
     }
 
     @Test

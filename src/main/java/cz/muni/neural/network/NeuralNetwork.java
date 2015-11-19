@@ -63,13 +63,14 @@ public class NeuralNetwork {
 
                 thetas.set(layer, theta);
             }
+
+            System.out.println("Gradient iteration = " + i);
         }
     }
 
     private List<DoubleMatrix> thetasGrad() {
-        List<DoubleMatrix> thetasGrad = createThetas(false); // init to zeros
 
-        // TODO this might be properly initialized
+        List<DoubleMatrix> thetasGrad = createThetas(false);
         List<DoubleMatrix> zetas = new ArrayList<>(numOfLayers - 1);
         List<DoubleMatrix> activations = new ArrayList<>(numOfLayers -1);
         List<DoubleMatrix> deltas = new ArrayList<>(numOfLayers - 1);
