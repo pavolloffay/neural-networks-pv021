@@ -45,8 +45,37 @@ public class NeuralNetwork {
     }
 
 
-    public void predict(LabeledPoint labeledPoint) {
-        // TODO
+    /**
+     * returns the probability
+     */
+    @SuppressWarnings("Duplicates")
+    public double[] predict(LabeledPoint labeledPoint) {
+
+        List<DoubleMatrix> activations = new ArrayList<>(numOfLayers -1);
+        List<DoubleMatrix> zetas = new ArrayList<>(numOfLayers - 1);
+
+        DoubleMatrix a1 = Utils.labeledPointToDoubleMatrix(labeledPoint);
+        a1 = a1.transpose();
+        a1 = a1.addFirstRow(BIAS);
+        activations.add(a1);
+
+        // forward propagation
+        for (int layer = 0; layer < numOfLayers - 1; layer++) {
+
+            DoubleMatrix zet = thetas.get(layer).matrixMultiply(activations.get(layer));
+            DoubleMatrix activation = zet.applyOnEach(hypothesis);
+
+            if (layer < numOfLayers - 2) {
+                // skip last
+                activation = activation.addFirstRow(1);
+            }
+
+            zetas.add(zet);
+            activations.add(activation);
+        }
+
+//        activations.get(numOfLayers - 1).printSize();
+        return activations.get(numOfLayers - 1).maxValueInRow();
     }
 
     private void gradientDescent() {

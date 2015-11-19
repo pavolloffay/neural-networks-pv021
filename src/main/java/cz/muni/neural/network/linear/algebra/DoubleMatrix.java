@@ -205,6 +205,23 @@ public class DoubleMatrix {
 
     }
 
+    public double[] maxValueInRow() {
+
+        double[] result = new double[numberOfRows];
+
+        for (int row = 0; row < numberOfRows; row++) {
+            double max = Double.MIN_VALUE;
+            for (int col = 0; col < numberOfColumns; col++) {
+                if (max < this.data[row][col]) {
+                    max = this.data[row][col];
+                }
+            }
+            result[row] = max;
+        }
+
+        return result;
+    }
+
     public DoubleMatrix applyOnEach(Function<Double, Double> fce) {
 
         double[][] result = new double[numberOfRows][numberOfColumns];
