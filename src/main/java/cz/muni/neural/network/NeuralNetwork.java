@@ -18,28 +18,59 @@ public class NeuralNetwork {
     private final List<Layer> layers;
     private final int numOfLayers;
 
+    private final double gradientAlpha;
+    private final long gradientNumberOfIter;
+
     private List<DoubleMatrix> thetas;
 
+    private List<LabeledPoint> labeledPoints;
 
-    public NeuralNetwork(List<Layer> layers) {
+    public NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter) {
         this.layers = layers;
         this.numOfLayers = layers.size();
+        this.gradientAlpha = gradientAlpha;
+        this.gradientNumberOfIter = gradientNumberOfIter;
 
-        thetas = createRandomThetas();
-
+        thetas = createThetas(true);
     }
 
     public List<Layer> getLayers() {
         return layers;
     }
 
-
     public void train(List<LabeledPoint> labeledPoints) {
+        this.labeledPoints = labeledPoints;
+        gradientDescent();
+    }
 
+
+    public void predict(LabeledPoint labeledPoint) {
+        // TODO
+    }
+
+    private void gradientDescent() {
+
+        for (int i = 0; i < gradientNumberOfIter; i++) {
+            List<DoubleMatrix> thetasGrad = thetasGrad();
+
+            for (int layer = 0; layer < numOfLayers - 1; layer++) {
+                DoubleMatrix theta = thetas.get(layer);
+
+                DoubleMatrix thetaGrad = thetasGrad.get(layer).scalarMultiply(gradientAlpha);
+                theta = theta.substract(thetaGrad);
+
+                thetas.set(layer, theta);
+            }
+        }
+    }
+
+    private List<DoubleMatrix> thetasGrad() {
+        List<DoubleMatrix> thetasGrad = createThetas(false); // init to zeros
+
+        // TODO this might be properly initialized
         List<DoubleMatrix> zetas = new ArrayList<>(numOfLayers - 1);
         List<DoubleMatrix> activations = new ArrayList<>(numOfLayers -1);
         List<DoubleMatrix> deltas = new ArrayList<>(numOfLayers - 1);
-        List<DoubleMatrix> thetasGrad = new ArrayList<>(numOfLayers -1);
 
         for (LabeledPoint labeledPoint: labeledPoints) {
             if (labeledPoint.getFeatures().length != layers.get(0).getNumberOfUnits()) {
@@ -83,21 +114,28 @@ public class NeuralNetwork {
                 // TODO Regularization - Lambda
             }
         }
+
+        return thetasGrad;
     }
 
-    public void predict(LabeledPoint labeledPoint) {
-        // TODO
-    }
-
-    private List<DoubleMatrix> createRandomThetas() {
+    /**
+     *
+     * @param random, if false thetas are initialized with 0
+     * @return
+     */
+    private List<DoubleMatrix> createThetas(boolean random) {
         List<DoubleMatrix> thetas = new ArrayList<>(numOfLayers - 1);
 
         for (int layer = 0; layer < numOfLayers - 1; layer++) {
 
-            DoubleMatrix theta = Utils.randomMatrix(EPSILON_INIT_THETA,
-                    layers.get(layer + 1).getNumberOfUnits(), layers.get(layer).getNumberOfUnits());
+            int rows = layers.get(layer + 1).getNumberOfUnits();
+            int cols =   layers.get(layer).getNumberOfUnits();
 
-            thetas.add(theta);
+            DoubleMatrix theta = random ?
+                    Utils.randomMatrix(EPSILON_INIT_THETA, rows, cols) :
+                    new DoubleMatrix(0, rows, cols);
+
+            thetas.set(layer, theta);
         }
 
         return thetas;
