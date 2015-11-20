@@ -16,30 +16,32 @@ public class NeuralNetwork {
     private Function<Double, Double> hypothesis = new Functions.Sigmoid();
     private Function<Double, Double> hypothesisDer = new Functions.SigmoidGradient();
 
+    /**
+     * Parameters
+     */
     private final List<Layer> layers;
     private final int numOfLayers;
-
     private final double gradientAlpha;
     private final long gradientNumberOfIter;
+    private final boolean regularize;
     private final double lambdaRegul;
 
     private List<DoubleMatrix> thetas;
 
     private List<LabeledPoint> labeledPoints;
 
-    public NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, double lambdaRegul) {
+    public NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, boolean regularize,
+                         double lambdaRegul) {
         this.layers = layers;
         this.numOfLayers = layers.size();
         this.gradientAlpha = gradientAlpha;
         this.gradientNumberOfIter = gradientNumberOfIter;
+        this.regularize = true;
         this.lambdaRegul = lambdaRegul;
 
         this.thetas = createThetas(true);
     }
 
-    public List<Layer> getLayers() {
-        return layers;
-    }
 
     public void train(List<LabeledPoint> labeledPoints) {
         this.labeledPoints = labeledPoints;
@@ -64,7 +66,7 @@ public class NeuralNetwork {
         // forward propagation
         for (int layer = 0; layer < numOfLayers - 1; layer++) {
 
-            DoubleMatrix zet = thetas.get(layer).matrixMultiply(activations.get(layer));
+            DoubleMatrix zet = this.thetas.get(layer).matrixMultiply(activations.get(layer));
             DoubleMatrix activation = zet.applyOnEach(hypothesis);
 
             if (layer < numOfLayers - 2) {
@@ -85,15 +87,16 @@ public class NeuralNetwork {
 
         for (int i = 0; i < gradientNumberOfIter; i++) {
 
+            List<DoubleMatrix> thetasGrad = thetasGrad();
+
             for (int layer = 0; layer < numOfLayers - 1; layer++) {
 
-                List<DoubleMatrix> thetasGrad = thetasGrad();
                 DoubleMatrix thetaGrad = thetasGrad.get(layer).scalarMultiply(gradientAlpha / labeledPoints.size());
 
                 DoubleMatrix theta = thetas.get(layer);
                 theta = theta.subtract(thetaGrad);
 
-                thetas.set(layer, theta);
+                this.thetas.set(layer, theta);
             }
 
             System.out.println("Gradient iteration = " + i);
@@ -121,7 +124,7 @@ public class NeuralNetwork {
             // forward propagation
             for (int layer = 0; layer < numOfLayers - 1; layer++) {
 
-                DoubleMatrix zet = thetas.get(layer).matrixMultiply(activations.get(layer));
+                DoubleMatrix zet = this.thetas.get(layer).matrixMultiply(activations.get(layer));
                 DoubleMatrix activation = zet.applyOnEach(hypothesis);
 
                 if (layer < numOfLayers - 2) {
@@ -134,7 +137,11 @@ public class NeuralNetwork {
             }
 
 
-            // back propagation
+            /**
+             * Back propagation
+             *                        index   0   , 1
+             * Deltas are stored as follows delta3, delta2 ...
+             */
             DoubleMatrix lastDelta = logicalResultColumnVector(labeledPoint)
                     .subtract(activations.get(numOfLayers - 1));
             deltas.add(lastDelta);
@@ -158,6 +165,13 @@ public class NeuralNetwork {
         /**
          * Regularization
          */
+        if (regularize) {
+            thetasGrad = regularizeThetasGrad(thetasGrad);
+        }
+        return thetasGrad;
+    }
+
+    private List<DoubleMatrix> regularizeThetasGrad(List<DoubleMatrix> thetasGrad) {
         double regul = lambdaRegul / labeledPoints.size();
         for (int i = 0; i < thetasGrad.size(); i++) {
             DoubleMatrix thetaGrad = thetasGrad.get(i);
@@ -167,6 +181,7 @@ public class NeuralNetwork {
 
             thetasGrad.set(i, thetaGrad);
         }
+
         return thetasGrad;
     }
 
@@ -202,5 +217,10 @@ public class NeuralNetwork {
         }
 
         return thetasReturn;
+    }
+
+    private double computeCost() {
+
+        return 0;
     }
 }

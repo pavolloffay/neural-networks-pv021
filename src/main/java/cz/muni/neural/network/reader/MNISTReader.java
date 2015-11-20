@@ -9,7 +9,8 @@ import java.util.List;
 import cz.muni.neural.network.LabeledPoint;
 
 /**
- * @author Pavol Loffay
+ * Source code from
+ * https://code.google.com/p/pen-ui/source/browse/trunk/skrui/src/org/six11/skrui/charrec/MNISTReader.java?r=185
  */
 public class MNISTReader {
 

@@ -15,10 +15,11 @@ public class NeuralNetworkTest {
     @Test
     public void testOnImages() throws IOException {
 
-        int TRAIN = 700;
+        int TRAIN = 200;
         int TEST = 200;
-        double ALPHA = 3.0;
-        int ITER = 30;
+        double ALPHA = 3;
+        int ITER = 50;
+        boolean REGULARIZE = true;
         double LAMBDA = 1.5;
 
         List<LabeledPoint> trainPoints = MNISTReader.read(TestUtils.IMAGES_TRAIN_PATH,
@@ -29,7 +30,7 @@ public class NeuralNetworkTest {
          * train
          */
         List<Layer> layers = TestUtils.create3Layers(features, new int[]{30, 10});
-        NeuralNetwork network = new NeuralNetwork(layers, ALPHA, ITER, LAMBDA);
+        NeuralNetwork network = new NeuralNetwork(layers, ALPHA, ITER, REGULARIZE,LAMBDA);
         network.train(trainPoints);
 
         /**
@@ -42,10 +43,10 @@ public class NeuralNetworkTest {
         for (LabeledPoint labeledPoint: testPoints) {
             double[] result = network.predict(labeledPoint);
 
-            int index = TestUtils.indexOfMaxValue(result);
+            int predictedNumber = TestUtils.indexOfMaxValue(result);
 
-            System.out.println("Label = " + labeledPoint.getLabel() + " predicted = " + index);
-            if (labeledPoint.getLabel() == index) {
+            System.out.println("Label = " + labeledPoint.getLabel() + " predicted = " + predictedNumber);
+            if (labeledPoint.getLabel() == predictedNumber) {
                 ok++;
             }
         }
