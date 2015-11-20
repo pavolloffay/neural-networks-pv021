@@ -18,8 +18,8 @@ public class NeuralNetwork {
     private static final double EPSILON_INIT_THETA = 0.12D;
     private static final double BIAS = 1D;
 
-    private Function<Double, Double> hypothesis = new Functions.Sigmoid();
-    private Function<Double, Double> hypothesisDer = new Functions.SigmoidGradient();
+    private final Function<Double, Double> hypothesis;
+    private final Function<Double, Double> hypothesisDer;
 
     /**
      * Parameters
@@ -34,13 +34,16 @@ public class NeuralNetwork {
     private List<DoubleMatrix> thetas;
 
     private NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, boolean regularize,
-                         double lambdaRegul) {
+                         double lambdaRegul,
+                          Function<Double, Double> hypothesis, Function<Double, Double> hypothesisDer) {
         this.layers = layers;
         this.numOfLayers = layers.size();
         this.gradientAlpha = gradientAlpha;
         this.gradientNumberOfIter = gradientNumberOfIter;
         this.regularize = regularize;
         this.lambdaRegul = lambdaRegul;
+        this.hypothesis = hypothesis;
+        this.hypothesisDer = hypothesisDer;
 
         this.thetas = createThetas(true);
     }
@@ -249,13 +252,17 @@ public class NeuralNetwork {
      * Only point how to build the network
      */
     public static class Builder {
-        private double gradientAlpha;
-        private long gradientIterations;
+        private double gradientAlpha = 0.5;
+        private long gradientIterations = 50;
 
         private boolean regularize;
-        private double regularizeLambda;
+        private double regularizeLambda = 1;
+
+        private Function<Double, Double> hypothesis = new Functions.Sigmoid();
+        private Function<Double, Double> hypothesisDer = new Functions.SigmoidGradient();
 
         private List<Layer> layers = new ArrayList<>();
+
 
         private Builder() {
         }
@@ -281,12 +288,21 @@ public class NeuralNetwork {
             return this;
         }
 
+        public Builder withHypothesisFn(Function<Double, Double> fn) {
+            this.hypothesis = fn;
+            return this;
+        }
+
+        public Builder withHypothesisDerivation(Function<Double, Double> fn) {
+            this.hypothesisDer = fn;
+            return this;
+        }
+
         public BuilderLayers withInputLayer(int numberOfFeatures) {
             Layer inputLayer = new Layer(numberOfFeatures);
             layers.add(inputLayer);
             return new BuilderLayers(this);
         }
-
     }
 
     public static final class BuilderLayers {
@@ -305,7 +321,8 @@ public class NeuralNetwork {
             builder.layers.add(new Layer(classesToClassify));
 
             return new NeuralNetwork(builder.layers, builder.gradientAlpha,
-                    builder.gradientIterations, builder.regularize, builder.regularizeLambda);
+                    builder.gradientIterations, builder.regularize, builder.regularizeLambda,
+                    builder.hypothesis, builder.hypothesisDer);
         }
     }
 
