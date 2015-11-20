@@ -1,5 +1,7 @@
 package cz.muni.neural.network.matrix;
 
+import static java.lang.Math.abs;
+
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -283,5 +285,17 @@ public class DoubleMatrix {
                 ", numberOfRows=" + numberOfRows +
                 ", data=" + Arrays.deepToString(data) +
                 '}';
+    }
+
+    public boolean allZero() {
+        for (int row = 0; row < numberOfRows; row++) {
+            for (int col = 0; col < numberOfColumns; col++) {
+                if (abs(this.data[row][col]) != 0) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

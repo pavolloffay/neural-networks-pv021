@@ -142,8 +142,12 @@ public class NeuralNetwork {
 
 
         for (int i = 0; i < numOfLayers - 1; i++) {
-            DoubleMatrix thetaGrad = thetasGrad.get(i).scalarMultiply(1/labeledPoints.size());
+            DoubleMatrix thetaGrad = thetasGrad.get(i).scalarMultiply(1D/(double)labeledPoints.size());
             thetasGrad.set(i, thetaGrad);
+
+            if (thetaGrad.allZero()) {
+                System.out.println("thetaGrad is all zero");
+            }
         }
 
         /**
@@ -185,7 +189,7 @@ public class NeuralNetwork {
 
 
     private List<DoubleMatrix> regularizeThetasGrad(List<DoubleMatrix> thetasGrad, long numberOfSamples) {
-        double regulator = lambdaRegul / numberOfSamples;
+        double regulator = lambdaRegul / ((double) numberOfSamples);
         for (int i = 0; i < thetasGrad.size(); i++) {
             DoubleMatrix thetaGrad = thetasGrad.get(i);
 

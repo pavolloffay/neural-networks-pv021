@@ -17,7 +17,7 @@ public class NeuralNetworkTest {
     @Test
     public void testOnImages() throws IOException {
 
-        int TRAIN = 700;
+        int TRAIN = 1500;
         int TEST = 50;
         double ALPHA = 0.1;
         int ITER = 50;
