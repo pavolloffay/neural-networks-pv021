@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.muni.neural.network.LabeledPoint;
+import cz.muni.neural.network.model.LabeledPoint;
 
 /**
  * Source code from

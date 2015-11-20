@@ -1,10 +1,14 @@
 package cz.muni.neural.network;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 import cz.muni.neural.network.matrix.DoubleMatrix;
+import cz.muni.neural.network.model.ForwardPropagationResult;
+import cz.muni.neural.network.model.LabeledPoint;
+import cz.muni.neural.network.model.Result;
 import cz.muni.neural.network.util.Utils;
 
 /**
@@ -29,8 +33,6 @@ public class NeuralNetwork {
 
     private List<DoubleMatrix> thetas;
 
-    private List<LabeledPoint> labeledPoints;
-
     public NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, boolean regularize,
                          double lambdaRegul) {
         this.layers = layers;
@@ -45,57 +47,30 @@ public class NeuralNetwork {
 
 
     public void train(List<LabeledPoint> labeledPoints) {
-        this.labeledPoints = labeledPoints;
-        gradientDescent();
+        gradientDescent(labeledPoints);
     }
-
 
     /**
      * returns the probability
      */
-    @SuppressWarnings("Duplicates")
-    public double[] predict(LabeledPoint labeledPoint) {
+    public Result predict(LabeledPoint labeledPoint) {
 
-        List<DoubleMatrix> activations = new ArrayList<>(numOfLayers -1);
-        List<DoubleMatrix> zetas = new ArrayList<>(numOfLayers - 1);
+        ForwardPropagationResult forwardPropagationResult = forwardPropagation(Arrays.asList(labeledPoint));
+        DoubleMatrix result = forwardPropagationResult.getLastActivation();
 
-        DoubleMatrix a1 = Utils.labeledPointToDoubleMatrix(labeledPoint);
-        a1 = a1.transpose();
-        a1 = a1.addFirstRow(BIAS);
-        activations.add(a1);
-
-        // forward propagation
-        for (int layer = 0; layer < numOfLayers - 1; layer++) {
-
-            DoubleMatrix zet = this.thetas.get(layer).matrixMultiply(activations.get(layer));
-            DoubleMatrix activation = zet.applyOnEach(hypothesis);
-
-            if (layer < numOfLayers - 2) {
-                // skip last
-                activation = activation.addFirstRow(BIAS);
-            }
-
-            zetas.add(zet);
-            activations.add(activation);
-        }
-
-        System.out.println(activations.get(activations.size() -1));
-//        activations.get(activations).printSize();
-        return activations.get(activations.size() - 1).maxValueInRow();
+        return new Result(result.maxValueInRow());
     }
 
-    private void gradientDescent() {
+    private void gradientDescent(List<LabeledPoint> labeledPoints) {
 
         for (int i = 0; i < gradientNumberOfIter; i++) {
 
-            List<DoubleMatrix> thetasGrad = thetasGrad();
+            List<DoubleMatrix> thetasGrad = forwardAndBackPropagation(labeledPoints);
 
             for (int layer = 0; layer < numOfLayers - 1; layer++) {
 
-                DoubleMatrix thetaGrad = thetasGrad.get(layer).scalarMultiply(gradientAlpha / labeledPoints.size());
-
-                DoubleMatrix theta = thetas.get(layer);
-                theta = theta.subtract(thetaGrad);
+                DoubleMatrix gradient = thetasGrad.get(layer).scalarMultiply(gradientAlpha);
+                DoubleMatrix theta = this.thetas.get(layer).subtract(gradient);
 
                 this.thetas.set(layer, theta);
             }
@@ -104,38 +79,27 @@ public class NeuralNetwork {
         }
     }
 
-    @SuppressWarnings("Duplicates")
-    private List<DoubleMatrix> thetasGrad() {
+    /**
+     * Forward propagation and backward propagation
+     * @return thetas gradient
+     */
+    private List<DoubleMatrix> forwardAndBackPropagation(List<LabeledPoint> labeledPoints) {
 
+        // initialize with zeros
         List<DoubleMatrix> thetasGrad = createThetas(false);
-        List<DoubleMatrix> zetas = new ArrayList<>(numOfLayers - 1);
-        List<DoubleMatrix> activations = new ArrayList<>(numOfLayers -1);
-        List<DoubleMatrix> deltas = new ArrayList<>(numOfLayers - 1);
 
         for (LabeledPoint labeledPoint: labeledPoints) {
             if (labeledPoint.getFeatures().length != layers.get(0).getNumberOfUnits()) {
                 throw new IllegalArgumentException("Labeled point has wrong number of features");
             }
 
-            DoubleMatrix a1 = Utils.labeledPointToDoubleMatrix(labeledPoint);
-            a1 = a1.transpose();
-            a1 = a1.addFirstRow(BIAS);
-            activations.add(a1);
-
-            // forward propagation
-            for (int layer = 0; layer < numOfLayers - 1; layer++) {
-
-                DoubleMatrix zet = this.thetas.get(layer).matrixMultiply(activations.get(layer));
-                DoubleMatrix activation = zet.applyOnEach(hypothesis);
-
-                if (layer < numOfLayers - 2) {
-                    // skip last
-                    activation = activation.addFirstRow(BIAS);
-                }
-
-                activations.add(activation);
-                zetas.add(zet);
-            }
+            /**
+             * Forward propagation
+             */
+            ForwardPropagationResult forwardPropagationResult = forwardPropagation(Arrays.asList(labeledPoint));
+            List<DoubleMatrix> zetas = forwardPropagationResult.getZetas();
+            List<DoubleMatrix> activations = forwardPropagationResult.getActivations();
+            List<DoubleMatrix> deltas = new ArrayList<>(numOfLayers - 1);
 
             /**
              * Back propagation
@@ -158,8 +122,9 @@ public class NeuralNetwork {
                 DoubleMatrix zeta = zetas.get((numOfLayers - 1) - layer - 1).applyOnEach(hypothesisDer);
                 zeta = zeta.addFirstRow(BIAS);
 
-                DoubleMatrix delta = thetas.get((numOfLayers - 1) - layer).transpose().matrixMultiply(
-                        deltas.get(layer -1));
+                DoubleMatrix delta = thetas.get((numOfLayers - 1) - layer).transpose()
+                        .matrixMultiply(deltas.get(layer -1));
+
                 delta = delta.multiplyByElements(zeta);
                 delta = delta.removeFirstRow();
                 deltas.add(delta);
@@ -175,21 +140,56 @@ public class NeuralNetwork {
             }
         }
 
+
+        for (int i = 0; i < numOfLayers - 1; i++) {
+            DoubleMatrix thetaGrad = thetasGrad.get(i).scalarMultiply(1/labeledPoints.size());
+            thetasGrad.set(i, thetaGrad);
+        }
+
         /**
          * Regularization
          */
-        if (regularize) {
-            thetasGrad = regularizeThetasGrad(thetasGrad);
+        if (this.regularize) {
+            thetasGrad = regularizeThetasGrad(thetasGrad, labeledPoints.size());
         }
         return thetasGrad;
     }
 
-    private List<DoubleMatrix> regularizeThetasGrad(List<DoubleMatrix> thetasGrad) {
-        double regul = lambdaRegul / labeledPoints.size();
+    private ForwardPropagationResult forwardPropagation(List<LabeledPoint> labeledPoints) {
+        List<DoubleMatrix> zetas = new ArrayList<>(numOfLayers - 1);
+        List<DoubleMatrix> activations = new ArrayList<>(numOfLayers -1);
+
+        DoubleMatrix a1 = Utils.labeledPointsToDoubleMatrix(labeledPoints);
+        a1 = a1.transpose();
+        a1 = a1.addFirstRow(BIAS);
+        activations.add(a1);
+
+        // forward propagation
+        for (int layer = 0; layer < numOfLayers - 1; layer++) {
+
+            DoubleMatrix zet = this.thetas.get(layer).matrixMultiply(activations.get(layer));
+            DoubleMatrix activation = zet.applyOnEach(hypothesis);
+
+            if (layer < numOfLayers - 2) {
+                // skip last
+                activation = activation.addFirstRow(BIAS);
+            }
+
+            activations.add(activation);
+            zetas.add(zet);
+        }
+
+        ForwardPropagationResult forwardPropagationResult = new ForwardPropagationResult(activations, zetas);
+        return forwardPropagationResult;
+    }
+
+
+    private List<DoubleMatrix> regularizeThetasGrad(List<DoubleMatrix> thetasGrad, long numberOfSamples) {
+        double regulator = lambdaRegul / numberOfSamples;
         for (int i = 0; i < thetasGrad.size(); i++) {
             DoubleMatrix thetaGrad = thetasGrad.get(i);
 
-            DoubleMatrix thetaRegul = thetas.get(i).removeFirstColumn().addFirstColumn(0).scalarMultiply(regul);
+            DoubleMatrix thetaRegul = thetas.get(i).removeFirstColumn().addFirstColumn(0).scalarMultiply(regulator);
             thetaGrad = thetaGrad.sum(thetaRegul);
 
             thetasGrad.set(i, thetaGrad);
@@ -233,32 +233,11 @@ public class NeuralNetwork {
     }
 
     // TODO
-    private double computeCost() {
+    private double computeCost(List<LabeledPoint> labeledPoints) {
 
-        List<DoubleMatrix> activations = new ArrayList<>(numOfLayers -1);
-        List<DoubleMatrix> zetas = new ArrayList<>(numOfLayers - 1);
+        ForwardPropagationResult forwardPropagationResult = forwardPropagation(labeledPoints);
 
-        DoubleMatrix a1 = Utils.labeledPointsToDoubleMatrix(this.labeledPoints);
-        a1 = a1.transpose();
-        a1 = a1.addFirstRow(BIAS);
-        activations.add(a1);
-
-        // forward propagation
-        for (int layer = 0; layer < numOfLayers - 1; layer++) {
-
-            DoubleMatrix zeta = activations.get(layer).matrixMultiply(this.thetas.get(layer).transpose());
-            DoubleMatrix activation = zeta.applyOnEach(hypothesis);
-
-            if (layer < numOfLayers - 2) {
-                // skip last
-                activation = activation.addFirstRow(BIAS);
-            }
-
-            zetas.add(zeta);
-            activations.add(activation);
-        }
-
-        double cost = 1 / this.labeledPoints.size();
+        double cost = 1 / labeledPoints.size();
 
         return cost;
     }

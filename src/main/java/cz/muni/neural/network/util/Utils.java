@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import cz.muni.neural.network.LabeledPoint;
+import cz.muni.neural.network.model.LabeledPoint;
 import cz.muni.neural.network.matrix.DoubleMatrix;
 
 /**

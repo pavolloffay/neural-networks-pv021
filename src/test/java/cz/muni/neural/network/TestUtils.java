@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import cz.muni.neural.network.model.LabeledPoint;
+
 /**
  * @author Pavol Loffay
  */
@@ -63,19 +65,4 @@ public class TestUtils {
 
         return labeledPoints;
     }
-
-    public static int indexOfMaxValue(double[] arr) {
-
-        double max = Double.MIN_VALUE;
-        int index = 0;
-        for (int i = 0; i < arr.length; i++) {
-            if (max < arr[i]) {
-                index = i;
-                max = arr[i];
-            }
-        }
-
-        return index;
-    }
-
 }

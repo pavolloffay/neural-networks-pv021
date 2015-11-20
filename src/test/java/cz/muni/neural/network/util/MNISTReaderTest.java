@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import cz.muni.neural.network.LabeledPoint;
+import cz.muni.neural.network.model.LabeledPoint;
 import cz.muni.neural.network.TestUtils;
 
 /**

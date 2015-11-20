@@ -1,4 +1,4 @@
-package cz.muni.neural.network;
+package cz.muni.neural.network.model;
 
 /**
  * @author Pavol Loffay

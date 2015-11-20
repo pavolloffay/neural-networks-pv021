@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import cz.muni.neural.network.model.LabeledPoint;
+import cz.muni.neural.network.model.Result;
 import cz.muni.neural.network.util.MNISTReader;
 
 /**
@@ -17,7 +19,7 @@ public class NeuralNetworkTest {
 
         int TRAIN = 700;
         int TEST = 50;
-        double ALPHA = 5;
+        double ALPHA = 0.1;
         int ITER = 50;
         boolean REGULARIZE = false;
         double LAMBDA = 1.5;
@@ -41,12 +43,12 @@ public class NeuralNetworkTest {
 
         int ok = 0;
         for (LabeledPoint labeledPoint: testPoints) {
-            double[] result = network.predict(labeledPoint);
+            Result result = network.predict(labeledPoint);
 
-            int predictedNumber = TestUtils.indexOfMaxValue(result);
 
-            System.out.println("Label = " + labeledPoint.getLabel() + " predicted = " + predictedNumber);
-            if (labeledPoint.getLabel() == predictedNumber) {
+            System.out.println(result);
+            System.out.println("Label = " + labeledPoint.getLabel() + " predicted = " + result.getMaxIndex());
+            if (labeledPoint.getLabel() == result.getMaxIndex()) {
                 ok++;
             }
         }
