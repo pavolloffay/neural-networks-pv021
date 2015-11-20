@@ -139,8 +139,16 @@ public class NeuralNetwork {
 
             /**
              * Back propagation
+             *
+             * Example for 3 layer network
+             *
              *                        index   0   , 1
              * Deltas are stored as follows delta3, delta2 ...
+             *
+             * zetas are stored z2, z3
+             * activations a1, a2, a3
+             *
+             * a1 = X with bias
              */
             DoubleMatrix lastDelta =
                     activations.get(numOfLayers - 1).subtract(logicalResultColumnVector(labeledPoint));
