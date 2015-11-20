@@ -1,4 +1,4 @@
-package cz.muni.neural.network.linear.algebra;
+package cz.muni.neural.network.matrix;
 
 import java.util.Arrays;
 import java.util.function.Function;

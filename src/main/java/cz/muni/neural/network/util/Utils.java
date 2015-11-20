@@ -1,10 +1,11 @@
-package cz.muni.neural.network;
+package cz.muni.neural.network.util;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import cz.muni.neural.network.linear.algebra.DoubleMatrix;
+import cz.muni.neural.network.LabeledPoint;
+import cz.muni.neural.network.matrix.DoubleMatrix;
 
 /**
  * @author Pavol Loffay

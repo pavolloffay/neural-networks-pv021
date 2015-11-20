@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import cz.muni.neural.network.reader.MNISTReader;
+import cz.muni.neural.network.util.MNISTReader;
 
 /**
  * @author Pavol Loffay

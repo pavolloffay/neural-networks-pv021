@@ -1,4 +1,4 @@
-package cz.muni.neural.network.reader;
+package cz.muni.neural.network.util;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

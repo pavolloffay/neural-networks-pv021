@@ -7,7 +7,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Assert;
 import org.junit.Test;
 
-import cz.muni.neural.network.linear.algebra.DoubleMatrix;
+import cz.muni.neural.network.matrix.DoubleMatrix;
 
 /**
  * @author Pavol Loffay

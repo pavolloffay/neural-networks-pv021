@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import cz.muni.neural.network.linear.algebra.DoubleMatrix;
+import cz.muni.neural.network.matrix.DoubleMatrix;
+import cz.muni.neural.network.util.Utils;
 
 /**
  * @author Pavol Loffay
@@ -36,7 +37,7 @@ public class NeuralNetwork {
         this.numOfLayers = layers.size();
         this.gradientAlpha = gradientAlpha;
         this.gradientNumberOfIter = gradientNumberOfIter;
-        this.regularize = true;
+        this.regularize = regularize;
         this.lambdaRegul = lambdaRegul;
 
         this.thetas = createThetas(true);
@@ -129,35 +130,39 @@ public class NeuralNetwork {
 
                 if (layer < numOfLayers - 2) {
                     // skip last
-                    activation = activation.addFirstRow(1);
+                    activation = activation.addFirstRow(BIAS);
                 }
 
                 activations.add(activation);
                 zetas.add(zet);
             }
 
-
             /**
              * Back propagation
              *                        index   0   , 1
              * Deltas are stored as follows delta3, delta2 ...
              */
-            DoubleMatrix lastDelta = logicalResultColumnVector(labeledPoint)
-                    .subtract(activations.get(numOfLayers - 1));
+            DoubleMatrix lastDelta =
+                    activations.get(numOfLayers - 1).subtract(logicalResultColumnVector(labeledPoint));
             deltas.add(lastDelta);
-            for (int layer = numOfLayers - 4; layer >= 0; layer--) {
+            for (int layer = 1; layer < numOfLayers - 1; layer++) {
 
-                DoubleMatrix sigmoidGradient = zetas.get(layer).applyOnEach(hypothesisDer);
-                sigmoidGradient = sigmoidGradient.addFirstRow(1);
+                DoubleMatrix zeta = zetas.get((numOfLayers - 1) - layer - 1).applyOnEach(hypothesisDer);
+                zeta = zeta.addFirstRow(BIAS);
 
-                DoubleMatrix delta = thetas.get(layer).transpose().matrixMultiply(deltas.get(layer + 1));
-                delta = delta.multiplyByElements(sigmoidGradient);
+                DoubleMatrix delta = thetas.get((numOfLayers - 1) - layer).transpose().matrixMultiply(
+                        deltas.get(layer -1));
+                delta = delta.multiplyByElements(zeta);
                 delta = delta.removeFirstRow();
+                deltas.add(delta);
+            }
 
-                DoubleMatrix thetaGrad = thetasGrad.get(layer);
-                DoubleMatrix thetaGradMul = delta.matrixMultiply(activations.get(layer).transpose());
-                thetaGrad = thetaGrad.sum(thetaGradMul);
-                thetaGrad = thetaGrad.scalarMultiply(labeledPoints.size());
+            for (int layer = 0; layer < numOfLayers - 1; layer++) {
+
+                DoubleMatrix activation = activations.get(layer).transpose();
+                DoubleMatrix delta = deltas.get((numOfLayers - 1) - layer - 1).matrixMultiply(activation);
+
+                DoubleMatrix thetaGrad = thetasGrad.get(layer).sum(delta);
                 thetasGrad.set(layer, thetaGrad);
             }
         }
@@ -219,8 +224,34 @@ public class NeuralNetwork {
         return thetasReturn;
     }
 
+    // TODO
     private double computeCost() {
 
-        return 0;
+        List<DoubleMatrix> activations = new ArrayList<>(numOfLayers -1);
+        List<DoubleMatrix> zetas = new ArrayList<>(numOfLayers - 1);
+
+        DoubleMatrix a1 = Utils.labeledPointsToDoubleMatrix(this.labeledPoints);
+        a1 = a1.transpose();
+        a1 = a1.addFirstRow(BIAS);
+        activations.add(a1);
+
+        // forward propagation
+        for (int layer = 0; layer < numOfLayers - 1; layer++) {
+
+            DoubleMatrix zeta = activations.get(layer).matrixMultiply(this.thetas.get(layer).transpose());
+            DoubleMatrix activation = zeta.applyOnEach(hypothesis);
+
+            if (layer < numOfLayers - 2) {
+                // skip last
+                activation = activation.addFirstRow(BIAS);
+            }
+
+            zetas.add(zeta);
+            activations.add(activation);
+        }
+
+        double cost = 1 / this.labeledPoints.size();
+
+        return cost;
     }
 }

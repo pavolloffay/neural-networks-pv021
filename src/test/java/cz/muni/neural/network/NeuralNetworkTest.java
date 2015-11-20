@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import cz.muni.neural.network.reader.MNISTReader;
+import cz.muni.neural.network.util.MNISTReader;
 
 /**
  * @author Pavol Loffay
@@ -15,11 +15,11 @@ public class NeuralNetworkTest {
     @Test
     public void testOnImages() throws IOException {
 
-        int TRAIN = 200;
-        int TEST = 200;
-        double ALPHA = 3;
+        int TRAIN = 700;
+        int TEST = 50;
+        double ALPHA = 5;
         int ITER = 50;
-        boolean REGULARIZE = true;
+        boolean REGULARIZE = false;
         double LAMBDA = 1.5;
 
         List<LabeledPoint> trainPoints = MNISTReader.read(TestUtils.IMAGES_TRAIN_PATH,

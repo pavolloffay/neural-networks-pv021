@@ -1,4 +1,4 @@
-package cz.muni.neural.network.reader;
+package cz.muni.neural.network.util;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -10,7 +10,7 @@ import cz.muni.neural.network.LabeledPoint;
 
 /**
  * Source code from
- * https://code.google.com/p/pen-ui/source/browse/trunk/skrui/src/org/six11/skrui/charrec/MNISTReader.java?r=185
+ * @see <a href="https://code.google.com/p/pen-ui/source/browse/trunk/skrui/src/org/six11/skrui/charrec/MNISTReader.java?r=185"></a>
  */
 public class MNISTReader {
 
