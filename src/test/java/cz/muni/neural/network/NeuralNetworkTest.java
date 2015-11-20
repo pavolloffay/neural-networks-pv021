@@ -1,5 +1,9 @@
 package cz.muni.neural.network;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.number.OrderingComparison.*;
+import static org.junit.Assert.assertThat;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -28,9 +32,6 @@ public class NeuralNetworkTest {
                 TestUtils.LABELS_TRAIN_PATH, TRAIN);
         int features = trainPoints.get(0).getFeatures().length;
 
-        /**
-         * train
-         */
         NeuralNetwork network = NeuralNetwork.newBuilder()
                 .withGradientAlpha(ALPHA)
                 .withGradientIterations(ITER)
@@ -40,7 +41,9 @@ public class NeuralNetworkTest {
                 .addLayer(30)
                 .addLastLayer(10);
 
-//
+        /**
+         * train
+         */
         network.train(trainPoints);
 
         /**
@@ -61,8 +64,12 @@ public class NeuralNetworkTest {
             }
         }
 
+        Double success = (ok / (double)testPoints.size()) * 100D;
+
         System.out.println("\n\nSuccessfully predicted = " + ok);
         System.out.println("Test examples = " + testPoints.size());
-        System.out.println("Success = " + (ok / (double)testPoints.size()) * 100D + "%");
+        System.out.println("Success = " + success + "%");
+
+        assertThat(success,  is(greaterThanOrEqualTo(new Double(70))));
     }
 }

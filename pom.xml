@@ -10,6 +10,7 @@
 
   <properties>
     <version.junit>4.8.1</version.junit>
+    <version.org.hamcrest-hamcrest-all>1.3</version.org.hamcrest-hamcrest-all>
     <version.exec-maven-plugin>1.4.0</version.exec-maven-plugin>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,6 +37,12 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <version>${version.org.hamcrest-hamcrest-all}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
