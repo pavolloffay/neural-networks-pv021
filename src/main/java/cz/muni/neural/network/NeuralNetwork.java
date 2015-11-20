@@ -33,7 +33,7 @@ public class NeuralNetwork {
 
     private List<DoubleMatrix> thetas;
 
-    public NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, boolean regularize,
+    private NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, boolean regularize,
                          double lambdaRegul) {
         this.layers = layers;
         this.numOfLayers = layers.size();
@@ -242,7 +242,74 @@ public class NeuralNetwork {
         ForwardPropagationResult forwardPropagationResult = forwardPropagation(labeledPoints);
 
         double cost = 1 / labeledPoints.size();
-
         return cost;
+    }
+
+    /**
+     * Only point how to build the network
+     */
+    public static class Builder {
+        private double gradientAlpha;
+        private long gradientIterations;
+
+        private boolean regularize;
+        private double regularizeLambda;
+
+        private List<Layer> layers = new ArrayList<>();
+
+        private Builder() {
+        }
+
+        public Builder withGradientAlpha(double alpha) {
+            this.gradientAlpha = alpha;
+            return this;
+        }
+
+        public Builder withGradientIterations(long iterations) {
+            this.gradientIterations = iterations;
+            return this;
+        }
+
+        public Builder withRegularize(boolean regularize) {
+            this.regularize = regularize;
+            return this;
+        }
+
+        public Builder withRegularizeLambda(double lambda) {
+            this.regularizeLambda = lambda;
+            this.regularize = true;
+            return this;
+        }
+
+        public BuilderLayers withInputLayer(int numberOfFeatures) {
+            Layer inputLayer = new Layer(numberOfFeatures);
+            layers.add(inputLayer);
+            return new BuilderLayers(this);
+        }
+
+    }
+
+    public static final class BuilderLayers {
+        private Builder builder;
+
+        private BuilderLayers(Builder builder) {
+            this.builder = builder;
+        }
+
+        public BuilderLayers addLayer(int units) {
+            builder.layers.add(new Layer(units));
+            return this;
+        }
+
+        public NeuralNetwork addLastLayer(int classesToClassify) {
+            builder.layers.add(new Layer(classesToClassify));
+
+            return new NeuralNetwork(builder.layers, builder.gradientAlpha,
+                    builder.gradientIterations, builder.regularize, builder.regularizeLambda);
+        }
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
     }
 }

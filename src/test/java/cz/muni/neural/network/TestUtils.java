@@ -36,17 +36,6 @@ public class TestUtils {
         IMAGES_TRAIN_PATH = testFile.getPath();
     }
 
-    public static List<Layer> create3Layers(int features, int[] structure) {
-        List<Layer> layers = new ArrayList<>();
-        Layer layer1 = new Layer(features);
-        Layer layer2 = new Layer(structure[0]);
-        Layer layer3 = new Layer(structure[1]);
-        layers.add(layer1);
-        layers.add(layer2);
-        layers.add(layer3);
-
-        return layers;
-    }
 
     public static List<LabeledPoint> createPoints(int number, int features) {
 
