@@ -39,6 +39,8 @@ public class NeuralNetworkDummyTest {
                 .withRegularize(true)
                 .withRegularizeLambda(50)
                 .withInputLayer(labeledPoints.get(0).getFeatures().length)
+                .addLayer(4)
+                .addLayer(5)
                 .addLastLayer(5);
 
         network.train(labeledPoints);

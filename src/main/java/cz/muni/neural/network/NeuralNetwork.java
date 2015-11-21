@@ -18,9 +18,6 @@ public class NeuralNetwork {
     private static final double EPSILON_INIT_THETA = 0.12D;
     private static final double BIAS = 1D;
 
-    private final Function<Double, Double> hypothesis;
-    private final Function<Double, Double> hypothesisDer;
-
     /**
      * Parameters
      */
@@ -30,8 +27,11 @@ public class NeuralNetwork {
     private final long gradientNumberOfIter;
     private final boolean regularize;
     private final double lambdaRegul;
+    private final Function<Double, Double> hypothesis;
+    private final Function<Double, Double> hypothesisDer;
 
     private List<DoubleMatrix> thetas;
+
 
     private NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, boolean regularize,
                          double lambdaRegul,
@@ -47,7 +47,6 @@ public class NeuralNetwork {
 
         this.thetas = createThetas(true);
     }
-
 
     public void train(List<LabeledPoint> labeledPoints) {
         gradientDescent(labeledPoints);
@@ -78,6 +77,7 @@ public class NeuralNetwork {
                 this.thetas.set(layer, theta);
             }
 
+            // TODO print the cost here
             System.out.println("Gradient iteration = " + i);
         }
     }
@@ -147,10 +147,6 @@ public class NeuralNetwork {
         for (int i = 0; i < numOfLayers - 1; i++) {
             DoubleMatrix thetaGrad = thetasGrad.get(i).scalarMultiply(1D/(double)labeledPoints.size());
             thetasGrad.set(i, thetaGrad);
-
-            if (thetaGrad.allZero()) {
-                System.out.println("thetaGrad is all zero");
-            }
         }
 
         /**
