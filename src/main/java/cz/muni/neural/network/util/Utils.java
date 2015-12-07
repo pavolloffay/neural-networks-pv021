@@ -58,5 +58,20 @@ public class Utils {
 
         return new DoubleMatrix(result);
     }
+    
+    public static double rmse(double[] a, double[] b) {
+        if (a.length != b.length) {
+            throw new IllegalArgumentException("Array sizes do not match!");
+        }
+            
+        double sum = 0;
+        int count = 0;
+        for (int i = 0; i < a.length; i++)
+        {
+            sum += Math.pow((double)(a[i] - b[i]), 2);
+            count++;  
+        }
+        return Math.sqrt(sum/count);
+    }
 
 }
