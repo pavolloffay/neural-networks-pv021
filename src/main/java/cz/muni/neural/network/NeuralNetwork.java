@@ -205,8 +205,15 @@ public class NeuralNetwork {
         int numberOfClasses = layers.get(layers.size() -1).getNumberOfUnits();
 
         double[][] arr = new double[numberOfClasses][1];
-        for (int col = 0; col < numberOfClasses; col++) {
-            arr[col][0] = labeledPoint.getLabel() == col ? 1D : 0D;
+        
+        if (numberOfClasses > 1) {
+            //classification
+            for (int col = 0; col < numberOfClasses; col++) {
+                arr[col][0] = labeledPoint.getLabel() == col ? 1D : 0D;
+            }
+        } else {
+            //prediction
+            arr[0][0] = labeledPoint.getLabel();
         }
 
         return new DoubleMatrix(arr);
