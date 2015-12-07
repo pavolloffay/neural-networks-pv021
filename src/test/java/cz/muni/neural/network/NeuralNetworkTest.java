@@ -75,8 +75,8 @@ public class NeuralNetworkTest {
         assertThat(success,  is(greaterThanOrEqualTo(new Double(70))));
     }
     
-    @Test
-    public void testOnCSV() throws IOException {
+    //@Test
+    public void testOnCSVPrediction() throws IOException {
 
         int TRAIN = 500000;
         int TEST = 500000; 
@@ -133,5 +133,59 @@ public class NeuralNetworkTest {
         System.out.println("RMSE = " + rmse);
 
         assertThat(rmse,  is(lessThanOrEqualTo(new Double(0.1))));
+    }
+    
+    @Test
+    public void testOnCSVClassification() throws IOException {
+
+        int TRAIN = 999999;
+        int TEST = 999999; 
+        double ALPHA = 0.5;
+        int ITER = 200;
+        boolean REGULARIZE = true;
+        double LAMBDA = 1;
+
+        List<LabeledPoint> trainPoints = CSVReader.read(TestUtils.CSV_CLASS_TRAIN_PATH, ";", TRAIN, false);
+        int features = trainPoints.get(0).getFeatures().length;
+
+        NeuralNetwork network = NeuralNetwork.newBuilder()
+                .withGradientAlpha(ALPHA)
+                .withGradientIterations(ITER)
+                .withRegularize(REGULARIZE)
+                .withRegularizeLambda(LAMBDA)
+                .withInputLayer(features)
+                .addLayer(30)
+                .addLastLayer(3);
+
+        /**
+         * train
+         */
+        network.train(trainPoints);
+
+        /**
+         * test
+         */
+        List<LabeledPoint> testPoints = CSVReader.read(TestUtils.CSV_CLASS_TEST_PATH, ";", TEST, false);
+        
+
+        int ok = 0;
+        for (LabeledPoint labeledPoint: testPoints) {
+
+            Result result = network.predict(labeledPoint);
+
+            System.out.println(result);
+            System.out.println("Label = " + labeledPoint.getLabel() + " predicted = " + result.getMaxIndex());
+            if (labeledPoint.getLabel() == result.getMaxIndex()) {
+                ok++;
+            }
+        }
+
+        Double success = (ok / (double)testPoints.size()) * 100D;
+
+        System.out.println("\n\nSuccessfully predicted = " + ok);
+        System.out.println("Test examples = " + testPoints.size());
+        System.out.println("Success = " + success + "%");
+
+        assertThat(success,  is(greaterThanOrEqualTo(new Double(70))));
     }
 }

@@ -66,6 +66,7 @@ public class CSVReader {
          
         System.out.println("Read " + labeledPoints.size() + " csv lines.");
 
+        //attempt to normalize around 0.5
         if (normalize && (labeledPoints.size() > 0)) {
             double mean = firstColSum / labeledPoints.size();
             
@@ -74,9 +75,11 @@ public class CSVReader {
             for (LabeledPoint lp : labeledPoints) {
                 varSum += Math.pow((lp.getFeatures()[0] - mean), 2);
             }
+            
             double variance = varSum / labeledPoints.size();
             double deviation = Math.sqrt(variance);
             System.out.println("Variance: "+variance+", deviation: "+deviation);
+            
             double inverseDev = (new Double(0.5)) / deviation;
             
             List<LabeledPoint> labeledPointsNormalized = new ArrayList<>();
