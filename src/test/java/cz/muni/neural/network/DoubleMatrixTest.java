@@ -59,7 +59,6 @@ public class DoubleMatrixTest {
 
         double[][] expected = new double[][]{{1, 4, 7}, {2, 5, 8}, {3, 6, 9}};
         assertThat(doubleMatrix.isTheSameAs(new DoubleMatrix(expected)), is(Boolean.TRUE));
-
     }
 
     @Test
@@ -71,7 +70,6 @@ public class DoubleMatrixTest {
         double[][] expected = new double[][]{{1, 3, 5}, {2, 4, 6}};
         assertThat(doubleMatrix.isTheSameAs(new DoubleMatrix(expected)), is(Boolean.TRUE));
     }
-    // todo test transpose 2x3
 
     @Test
     public void testMultiply() {

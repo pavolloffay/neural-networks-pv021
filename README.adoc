@@ -15,5 +15,6 @@ JDK 8, Maven
 == Build & Run
 [source,shell]
 ----
+mvn clean install -DskipTests
 mvn install exec:java
 ----

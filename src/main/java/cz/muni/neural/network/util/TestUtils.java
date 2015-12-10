@@ -1,6 +1,5 @@
-package cz.muni.neural.network;
+package cz.muni.neural.network.util;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,24 +38,15 @@ public class TestUtils {
     static {
         ClassLoader classLoader = TestUtils.class.getClassLoader();
 
-        URL testFile = classLoader.getResource(IMAGES_TEST);
-        IMAGES_TEST_PATH = testFile.getPath();
-        testFile = classLoader.getResource(LABELS_TEST);
-        LABELS_TEST_PATH = testFile.getPath();
-        testFile = classLoader.getResource(LABELS_TRAIN);
-        LABELS_TRAIN_PATH = testFile.getPath();
-        testFile = classLoader.getResource(IMAGES_TRAIN);
-        IMAGES_TRAIN_PATH = testFile.getPath();
-        testFile = classLoader.getResource(CSV_TEST);
-        CSV_TEST_PATH = testFile.getPath();
-        testFile = classLoader.getResource(CSV_TRAIN);
-        CSV_TRAIN_PATH = testFile.getPath();
-        testFile = classLoader.getResource(CSV_RESULTS);
-        CSV_RESULTS_PATH = testFile.getPath();
-        testFile = classLoader.getResource(CSV_CLASS_TRAIN);
-        CSV_CLASS_TRAIN_PATH = testFile.getPath();
-        testFile = classLoader.getResource(CSV_CLASS_TEST);
-        CSV_CLASS_TEST_PATH = testFile.getPath();
+        IMAGES_TEST_PATH = classLoader.getResource(IMAGES_TEST).getPath();
+        LABELS_TEST_PATH = classLoader.getResource(LABELS_TEST).getPath();
+        LABELS_TRAIN_PATH = classLoader.getResource(LABELS_TRAIN).getPath();
+        IMAGES_TRAIN_PATH = classLoader.getResource(IMAGES_TRAIN).getPath();
+        CSV_TEST_PATH = classLoader.getResource(CSV_TEST).getPath();
+        CSV_TRAIN_PATH = classLoader.getResource(CSV_TRAIN).getPath();
+        CSV_RESULTS_PATH = classLoader.getResource(CSV_RESULTS).getPath();
+        CSV_CLASS_TRAIN_PATH = classLoader.getResource(CSV_CLASS_TRAIN).getPath();
+        CSV_CLASS_TEST_PATH = classLoader.getResource(CSV_CLASS_TEST).getPath();
     }
     
     public static List<LabeledPoint> createPoints(int number, int features) {
