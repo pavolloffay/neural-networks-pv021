@@ -77,8 +77,8 @@ public class NeuralNetwork {
                 this.thetas.set(layer, theta);
             }
 
-            // TODO print the cost here
-            System.out.println("Gradient iteration = " + i);
+            //vypisujeme chybu pouze u kazde 5. iterace
+            System.out.println("Gradient iteration = " + i + (i % 5 == 0 ? (", error = " + computeCost(labeledPoints)) : ""));            
         }
     }
 
@@ -242,12 +242,36 @@ public class NeuralNetwork {
         return thetasReturn;
     }
 
-    // TODO
     private double computeCost(List<LabeledPoint> labeledPoints) {
-
-        ForwardPropagationResult forwardPropagationResult = forwardPropagation(labeledPoints);
-
-        double cost = 1 / labeledPoints.size();
+        
+        
+        int points = labeledPoints.size();        
+        
+        int numberOfClasses = layers.get(layers.size() -1).getNumberOfUnits();
+        
+        double cost = 0;
+                
+        if (numberOfClasses > 1) {
+            //classification
+            int ok = 0;
+            for (LabeledPoint lp : labeledPoints) {
+                Result r = predict(lp);
+                if (lp.getLabel() == r.getMaxIndex()) {
+                    ok++;
+                }
+            }
+            cost = 1 - (ok / (double)points);
+        } else {
+            //prediction
+            ForwardPropagationResult forwardPropagationResult = forwardPropagation(labeledPoints);
+            double[] labels = new double[points];
+        
+            for (int i = 0; i < points; i++) {
+                labels[i] = labeledPoints.get(i).getLabel();
+            }
+            cost = Utils.rmse(forwardPropagationResult.getLastActivation().getRow(0), labels);
+        }
+        
         return cost;
     }
 
@@ -317,6 +341,13 @@ public class NeuralNetwork {
 
         public BuilderLayers addLayer(int units) {
             builder.layers.add(new Layer(units));
+            return this;
+        }
+        
+        public BuilderLayers addLayers(List<Integer> newLayers) {
+            for (Integer i : newLayers) {
+                builder.layers.add(new Layer(i));
+            }
             return this;
         }
 
