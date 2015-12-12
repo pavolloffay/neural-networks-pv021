@@ -27,6 +27,7 @@ public class NeuralNetwork {
     private final long gradientNumberOfIter;
     private final boolean regularize;
     private final double lambdaRegul;
+    private final boolean classify;
     private final Function<Double, Double> hypothesis;
     private final Function<Double, Double> hypothesisDer;
 
@@ -34,7 +35,7 @@ public class NeuralNetwork {
 
 
     private NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, boolean regularize,
-                         double lambdaRegul,
+                         double lambdaRegul, boolean classify,
                           Function<Double, Double> hypothesis, Function<Double, Double> hypothesisDer) {
         this.layers = layers;
         this.numOfLayers = layers.size();
@@ -42,6 +43,7 @@ public class NeuralNetwork {
         this.gradientNumberOfIter = gradientNumberOfIter;
         this.regularize = regularize;
         this.lambdaRegul = lambdaRegul;
+        this.classify = classify;
         this.hypothesis = hypothesis;
         this.hypothesisDer = hypothesisDer;
 
@@ -207,7 +209,7 @@ public class NeuralNetwork {
 
         double[][] arr = new double[numberOfClasses][1];
         
-        if (numberOfClasses > 1) {
+        if (classify) {
             //classification
             for (int col = 0; col < numberOfClasses; col++) {
                 arr[col][0] = labeledPoint.getLabel() == col ? 1D : 0D;
@@ -283,6 +285,8 @@ public class NeuralNetwork {
         private boolean regularize;
         private double regularizeLambda = 1;
 
+        private boolean classify = true;
+        
         private Function<Double, Double> hypothesis = new Functions.Sigmoid();
         private Function<Double, Double> hypothesisDer = new Functions.SigmoidGradient();
 
@@ -304,6 +308,11 @@ public class NeuralNetwork {
 
         public Builder withRegularize(boolean regularize) {
             this.regularize = regularize;
+            return this;
+        }
+        
+        public Builder withClassify(boolean classify) {
+            this.classify = classify;
             return this;
         }
 
@@ -354,7 +363,7 @@ public class NeuralNetwork {
 
             return new NeuralNetwork(builder.layers, builder.gradientAlpha,
                     builder.gradientIterations, builder.regularize, builder.regularizeLambda,
-                    builder.hypothesis, builder.hypothesisDer);
+                    builder.classify, builder.hypothesis, builder.hypothesisDer);
         }
     }
 

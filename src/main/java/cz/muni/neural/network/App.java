@@ -12,6 +12,7 @@ import cz.muni.neural.network.model.Result;
 import cz.muni.neural.network.util.CSVReader;
 import cz.muni.neural.network.util.MNISTReader;
 import cz.muni.neural.network.util.OHLCReader;
+import cz.muni.neural.network.util.TestUtils;
 import cz.muni.neural.network.util.Utils;
 
 /**
@@ -26,18 +27,25 @@ public class App {
     private static boolean REGULARIZE = true;
     private static double LAMBDA = 1;
     private static int FEATURES = 20;
-    private static String OHLC_PATH = "c:\\ohlc\\GBPUSD.csv";
-    private static String RESULT_PATH = "c:\\ohlc\\result.csv";
-    private static String MNIST_TRAIN_PATH = "c:\\mnist\\train-images-idx3-ubyte";
-    private static String MNIST_LABELS_TRAIN_PATH = "c:\\mnist\\train-labels-idx1-ubyte";
-    private static String MNIST_TEST_PATH = "c:\\mnist\\t10k-images-idx3-ubyte";
-    private static String MNIST_LABELS_TEST_PATH = "c:\\mnist\\t10k-labels-idx1-ubyte";
+    private static String OHLC_PATH = null;
+    private static String RESULT_PATH = null;
+    private static String MNIST_TRAIN_PATH = null;
+    private static String MNIST_LABELS_TRAIN_PATH = null;
+    private static String MNIST_TEST_PATH = null;
+    private static String MNIST_LABELS_TEST_PATH = null;
     private static int PERIOD = 60;
     private static List<Integer> architecture = Arrays.asList(15);
 
     private static NeuralNetwork network = null;
 
     public static void main(String[] args) throws IOException {
+        OHLC_PATH = TestUtils.OHLC_PATH;
+        RESULT_PATH = TestUtils.CSV_RESULT_PATH;
+        MNIST_TRAIN_PATH = TestUtils.IMAGES_TRAIN_PATH;
+        MNIST_LABELS_TRAIN_PATH = TestUtils.LABELS_TRAIN_PATH;
+        MNIST_TEST_PATH = TestUtils.IMAGES_TRAIN_PATH;
+        MNIST_LABELS_TEST_PATH = TestUtils.LABELS_TRAIN_PATH;
+    
         System.out.println("Neural network for classification and prediction.");
         System.out.println("Authors: Pavol Loffay, Vaclav Blahut and Jan Brandejs.");
 
@@ -199,6 +207,7 @@ public class App {
                 .withGradientIterations(ITER)
                 .withRegularize(REGULARIZE)
                 .withRegularizeLambda(LAMBDA)
+                .withClassify(false)
                 .withInputLayer(FEATURES)
                 .addLayers(architecture)
                 .addLastLayer(1);
@@ -416,6 +425,7 @@ public class App {
                 .withGradientIterations(ITER)
                 .withRegularize(REGULARIZE)
                 .withRegularizeLambda(LAMBDA)
+                .withClassify(true)
                 .withInputLayer(features)
                 .addLayers(architecture)
                 .addLastLayer(10);

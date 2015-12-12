@@ -21,10 +21,12 @@ public class TestUtils {
     public static final String CSV_TEST = "GBPUSD_M1_test.csv";
     public static final String CSV_TRAIN = "GBPUSD_M1_train.csv";
     
-    public static final String OHLC = "GBPUSD_M5_OHLC.csv";
+    public static final String OHLC = "GBPUSD_M1_OHLC.csv";
     
     public static final String CSV_CLASS_TEST = "GBPUSD_M5_class_test.csv";
     public static final String CSV_CLASS_TRAIN = "GBPUSD_M5_class_train.csv";
+    
+    public static final String CSV_RESULT = "csv_results.csv";
     
     public static final String IMAGES_TEST_PATH;
     public static final String LABELS_TEST_PATH;
@@ -35,6 +37,7 @@ public class TestUtils {
     public static final String CSV_CLASS_TEST_PATH;
     public static final String CSV_CLASS_TRAIN_PATH;
     public static final String OHLC_PATH;  
+    public static final String CSV_RESULT_PATH;  
     static {
         ClassLoader classLoader = TestUtils.class.getClassLoader();
 
@@ -47,6 +50,7 @@ public class TestUtils {
         CSV_CLASS_TRAIN_PATH = classLoader.getResource(CSV_CLASS_TRAIN).getPath();
         CSV_CLASS_TEST_PATH = classLoader.getResource(CSV_CLASS_TEST).getPath();
         OHLC_PATH = classLoader.getResource(OHLC).getPath();
+        CSV_RESULT_PATH = classLoader.getResource(CSV_RESULT).getPath();
     }
     
     public static List<LabeledPoint> createPoints(int number, int features) {
