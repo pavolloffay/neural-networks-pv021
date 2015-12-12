@@ -18,23 +18,23 @@ public class TestUtils {
     public static final String IMAGES_TRAIN = "train-images-idx3-ubyte";
     public static final String LABELS_TRAIN = "train-labels-idx1-ubyte";
 
-    public static final String CSV_TEST = "GBPUSD_M5_test.csv";
-    public static final String CSV_TRAIN = "GBPUSD_M5_train.csv";
+    public static final String CSV_TEST = "GBPUSD_M1_test.csv";
+    public static final String CSV_TRAIN = "GBPUSD_M1_train.csv";
+    
+    public static final String OHLC = "GBPUSD_M5_OHLC.csv";
     
     public static final String CSV_CLASS_TEST = "GBPUSD_M5_class_test.csv";
     public static final String CSV_CLASS_TRAIN = "GBPUSD_M5_class_train.csv";
-    
-    public static final String CSV_RESULTS = "csv_results.csv";
     
     public static final String IMAGES_TEST_PATH;
     public static final String LABELS_TEST_PATH;
     public static final String IMAGES_TRAIN_PATH;
     public static final String LABELS_TRAIN_PATH;
-    public static final String CSV_TEST_PATH;    
+    public static final String CSV_TEST_PATH;
     public static final String CSV_TRAIN_PATH;
-    public static final String CSV_CLASS_TEST_PATH;    
-    public static final String CSV_CLASS_TRAIN_PATH; 
-    public static final String CSV_RESULTS_PATH;    
+    public static final String CSV_CLASS_TEST_PATH;
+    public static final String CSV_CLASS_TRAIN_PATH;
+    public static final String OHLC_PATH;  
     static {
         ClassLoader classLoader = TestUtils.class.getClassLoader();
 
@@ -44,9 +44,9 @@ public class TestUtils {
         IMAGES_TRAIN_PATH = classLoader.getResource(IMAGES_TRAIN).getPath();
         CSV_TEST_PATH = classLoader.getResource(CSV_TEST).getPath();
         CSV_TRAIN_PATH = classLoader.getResource(CSV_TRAIN).getPath();
-        CSV_RESULTS_PATH = classLoader.getResource(CSV_RESULTS).getPath();
         CSV_CLASS_TRAIN_PATH = classLoader.getResource(CSV_CLASS_TRAIN).getPath();
         CSV_CLASS_TEST_PATH = classLoader.getResource(CSV_CLASS_TEST).getPath();
+        OHLC_PATH = classLoader.getResource(OHLC).getPath();
     }
     
     public static List<LabeledPoint> createPoints(int number, int features) {

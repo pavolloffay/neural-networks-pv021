@@ -15,14 +15,12 @@ import cz.muni.neural.network.model.LabeledPoint;
  */
 public class CSVReader {
 
-    public static List<LabeledPoint> read(String file, String separator, int numberOfPoints, boolean normalize)
-            throws IOException {
+    public static List<LabeledPoint> read(String file, String separator, int numberOfPoints) throws IOException {
 
         BufferedReader br = null;
         String line = "";
         List<LabeledPoint> labeledPoints = new ArrayList<>();
 
-        double firstColSum = 0D;
         int lineCount = 0;
 
         try {
@@ -34,10 +32,6 @@ public class CSVReader {
                 double[] doubleValues = new double[length];
                 for (int i = 0; i < length; i++) {
                     doubleValues[i] = Double.parseDouble(lineValues[i]);
-                }
-
-                if (normalize && length > 0) {
-                    firstColSum += doubleValues[0];
                 }
 
                 LabeledPoint labeledPoint = new LabeledPoint(doubleValues[doubleValues.length - 1],
@@ -60,34 +54,6 @@ public class CSVReader {
         }
 
         System.out.println("Read " + labeledPoints.size() + " csv lines.");
-
-        //attempt to normalize around 0.5
-        if (normalize && (labeledPoints.size() > 0)) {
-            double mean = firstColSum / labeledPoints.size();
-
-            System.out.println("Normalizing. Mean: " + mean);
-            double varSum = 0;
-            for (LabeledPoint lp : labeledPoints) {
-                varSum += Math.pow((lp.getFeatures()[0] - mean), 2);
-            }
-
-            double variance = varSum / labeledPoints.size();
-            double deviation = Math.sqrt(variance);
-            System.out.println("Variance: " + variance + ", deviation: " + deviation);
-
-            double inverseDev = (new Double(0.5)) / deviation;
-
-            List<LabeledPoint> labeledPointsNormalized = new ArrayList<>();
-            for (LabeledPoint lp : labeledPoints) {
-                double[] normalizedFeatures = new double[lp.getFeatures().length];
-                for (int i = 0; i < lp.getFeatures().length; i++) {
-                    normalizedFeatures[i] = ((lp.getFeatures()[i] - mean) * inverseDev) + new Double(0.5);
-                }
-                double normalizedLabel = ((lp.getLabel() - mean) * inverseDev) + new Double(0.5);
-                labeledPointsNormalized.add(new LabeledPoint(normalizedLabel, normalizedFeatures));
-            }
-            return labeledPointsNormalized;
-        }
 
         return labeledPoints;
     }
