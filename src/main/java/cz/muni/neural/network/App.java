@@ -22,8 +22,8 @@ public class App {
 
     private static int TRAIN = 500;
     private static int TEST = 100;
-    private static int ITER = 200;
-    private static double ALPHA = 0.5;
+    private static int ITER = 150;
+    private static double ALPHA = 1;
     private static boolean REGULARIZE = true;
     private static double LAMBDA = 1;
     private static int FEATURES = 20;
@@ -75,6 +75,9 @@ public class App {
     }
 
     private static void predictOHLCsettings() throws IOException {
+        
+        TRAIN = 280000;
+        TEST = 70000;
 
         architecture = Arrays.asList(15);
 
@@ -353,7 +356,9 @@ public class App {
     }
 
     private static void predictMNISTsettings() throws IOException {
-
+        TRAIN = 60000;
+        TEST = 10000;
+        
         architecture = Arrays.asList(30);
 
         boolean quit = false;
