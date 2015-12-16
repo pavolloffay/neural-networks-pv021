@@ -16,5 +16,19 @@ JDK 8, Maven
 [source,shell]
 ----
 mvn clean install -DskipTests
-mvn install exec:java
+mvn exec:java -h
+----
+
+Classification of numbers
+[source,shell]
+----
+mvn exec:java -Dexec.args='-e numbers'
+mvn exec:java -Dexec.args='-e numbers -n 200 -alpha 0.01 -lambda 1 -s_train 500 -s_test 50 -layers 30 10'
+----
+
+OHLC time series prediction
+[source,shell]
+----
+mvn exec:java -Dexec.args='-e ts'
+mvn exec:java -Dexec.args='-e ts -n 150 -alpha 1 -lambda 1 -s_train 280000 -s_test 69000 -layers 15 1'
 ----

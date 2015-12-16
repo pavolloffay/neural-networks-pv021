@@ -370,4 +370,18 @@ public class NeuralNetwork {
     public static Builder newBuilder() {
         return new Builder();
     }
+
+    @Override
+    public String toString() {
+        return "NeuralNetwork{" +
+                "layers=" + layers +
+                ", lambdaRegul=" + lambdaRegul +
+                ", regularize=" + regularize +
+                ", classify=" + classify +
+                ", hypothesis=" + hypothesis +
+                ", hypothesisDer=" + hypothesisDer +
+                ", gradientAlpha=" + gradientAlpha +
+                ", gradientNumberOfIter=" + gradientNumberOfIter +
+                '}';
+    }
 }

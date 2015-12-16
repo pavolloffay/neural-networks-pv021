@@ -16,6 +16,7 @@ public class MNISTReader {
 
 
     public static List<LabeledPoint> read(String imagesFile, String labelsFile, int numberOfPoints) throws IOException {
+        System.out.format("MNIST reader: numberOfPoints: %d, file: %s\n", numberOfPoints, imagesFile);
 
         DataInputStream labels = new DataInputStream(new FileInputStream(labelsFile));
         DataInputStream images = new DataInputStream(new FileInputStream(imagesFile));

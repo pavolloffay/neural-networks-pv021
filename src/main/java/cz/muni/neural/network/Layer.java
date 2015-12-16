@@ -14,4 +14,11 @@ public class Layer {
     public int getNumberOfUnits() {
         return numberOfUnits;
     }
+
+    @Override
+    public String toString() {
+        return "Layer{" +
+                "numberOfUnits=" + numberOfUnits +
+                '}';
+    }
 }

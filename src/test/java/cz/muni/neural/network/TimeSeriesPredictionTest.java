@@ -174,7 +174,7 @@ public class TimeSeriesPredictionTest {
                 .withGradientIterations(ITER)
                 .withRegularize(REGULARIZE)
                 .withRegularizeLambda(LAMBDA)
-                .withClassify(true)
+                .withClassify(false)
                 .withInputLayer(FEATURES)
                 .addLayer(15)
                 .addLastLayer(1);
