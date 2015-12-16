@@ -12,21 +12,21 @@ import cz.muni.neural.network.model.LabeledPoint;
  */
 public class TestUtils {
 
-    public static final String IMAGES_TEST = "t10k-images-idx3-ubyte";
-    public static final String LABELS_TEST = "t10k-labels-idx1-ubyte";
+    private static final String IMAGES_TEST = "t10k-images-idx3-ubyte";
+    private static final String LABELS_TEST = "t10k-labels-idx1-ubyte";
 
-    public static final String IMAGES_TRAIN = "train-images-idx3-ubyte";
-    public static final String LABELS_TRAIN = "train-labels-idx1-ubyte";
+    private static final String IMAGES_TRAIN = "train-images-idx3-ubyte";
+    private static final String LABELS_TRAIN = "train-labels-idx1-ubyte";
 
-    public static final String CSV_TEST = "GBPUSD_M1_test.csv";
-    public static final String CSV_TRAIN = "GBPUSD_M1_train.csv";
+    private static final String CSV_TEST = "GBPUSD_M1_test.csv";
+    private static final String CSV_TRAIN = "GBPUSD_M1_train.csv";
     
-    public static final String OHLC = "GBPUSD_M1_OHLC.csv";
+    private static final String OHLC = "GBPUSD_M1_OHLC.csv";
     
-    public static final String CSV_CLASS_TEST = "GBPUSD_M5_class_test.csv";
-    public static final String CSV_CLASS_TRAIN = "GBPUSD_M5_class_train.csv";
+    private static final String CSV_CLASS_TEST = "GBPUSD_M5_class_test.csv";
+    private static final String CSV_CLASS_TRAIN = "GBPUSD_M5_class_train.csv";
     
-    public static final String CSV_RESULT = "csv_results.csv";
+    private static final String CSV_RESULT = "csv_results.csv";
     
     public static final String IMAGES_TEST_PATH;
     public static final String LABELS_TEST_PATH;

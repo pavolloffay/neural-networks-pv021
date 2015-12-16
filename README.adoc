@@ -16,5 +16,12 @@ JDK 8, Maven
 [source,shell]
 ----
 mvn clean install -DskipTests
-mvn install exec:java
+mvn exec:java -h
+----
+
+Classification of numbers
+[source,shell]
+----
+mvn exec:java -Dexec.args='-e numbers'
+mvn exec:java -Dexec.args='-e numbers -n 200 -alpha 0.01 -lambda 1 -s_train 500 -s_test 50 -layers 30 10'
 ----
