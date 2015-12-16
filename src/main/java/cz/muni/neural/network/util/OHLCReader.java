@@ -5,63 +5,64 @@
  */
 package cz.muni.neural.network.util;
 
-import cz.muni.neural.network.model.LabeledPoint;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.joda.time.DateTime;
-import org.joda.time.Minutes;
 import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import cz.muni.neural.network.model.LabeledPoint;
+
 /**
- *
  * @author Václav
  */
 public class OHLCReader {
-    
-    public static List<LabeledPoint> read(String file, int numberOfFeatures, int numberOfPoints, boolean skipWeekends, int period) throws IOException {
-                  
-	BufferedReader br = null;
-	String line = "";
+
+    public static List<LabeledPoint> read(String file, int numberOfFeatures, int numberOfPoints, boolean skipWeekends,
+                                          int period) throws IOException {
+
+        BufferedReader br = null;
+        String line = "";
         List<Double> values = new ArrayList<Double>();
         List<Integer> weekendIndices = new ArrayList<Integer>();
         DateTime prevDate = null;
         DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy.MM.dd HH:mm");
-        
+
         int lineCount = 0;
-        
-	try {
+
+        try {
             br = new BufferedReader(new FileReader(file));
             while ((line = br.readLine()) != null) {
 
                 String[] lineValues = line.split(",");
                 int length = lineValues.length;
-                
-                if (length != 7)  {
+
+                if (length != 7) {
                     throw new IOException("File has wrong format!");
                 }
-                
+
                 //6th column is closing value
-                values.add(Double.parseDouble(lineValues[5]));  
+                values.add(Double.parseDouble(lineValues[5]));
                 if (skipWeekends) {
-                    DateTime newDate = DateTime.parse(lineValues[0]+" "+lineValues[1], dtf);
+                    DateTime newDate = DateTime.parse(lineValues[0] + " " + lineValues[1], dtf);
                     if (prevDate != null && Seconds.secondsBetween(prevDate, newDate).getSeconds() > period) {
-                        weekendIndices.add(lineCount-1);
+                        weekendIndices.add(lineCount - 1);
                     }
                     prevDate = newDate;
                 }
                 lineCount++;
             }
-	} catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-	} catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-	} finally {
+        } finally {
             if (br != null) {
                 try {
                     br.close();
@@ -69,12 +70,12 @@ public class OHLCReader {
                     e.printStackTrace();
                 }
             }
-	}
-        
+        }
+
         Object[] doubleVals = values.toArray();
-        
+
         int finalLength = doubleVals.length - numberOfFeatures - 1;
-        
+
         List<LabeledPoint> labeledPoints = new ArrayList<>();
         for (int i = 0; i < finalLength && labeledPoints.size() < numberOfPoints; i++) {
             //check if period contains weekend
@@ -90,16 +91,16 @@ public class OHLCReader {
                     continue;
                 }
             }
-            
+
             double[] features = new double[numberOfFeatures];
             for (int j = 0; j < numberOfFeatures; j++) {
-                features[j] = (double)doubleVals[i+j];
+                features[j] = (double) doubleVals[i + j];
             }
-            labeledPoints.add(new LabeledPoint((double)doubleVals[i+numberOfFeatures+1], features));
+            labeledPoints.add(new LabeledPoint((double) doubleVals[i + numberOfFeatures + 1], features));
         }
-        
+
         System.out.println("Read " + labeledPoints.size() + " points.");
-               
+
         return labeledPoints;
     }
     /*

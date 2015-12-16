@@ -1,14 +1,14 @@
 package cz.muni.neural.network.util;
 
-import cz.muni.neural.network.Functions;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
-import cz.muni.neural.network.model.LabeledPoint;
-import cz.muni.neural.network.matrix.DoubleMatrix;
-import java.util.ArrayList;
 import java.util.function.Function;
+
+import cz.muni.neural.network.Functions;
+import cz.muni.neural.network.matrix.DoubleMatrix;
+import cz.muni.neural.network.model.LabeledPoint;
 
 /**
  * @author Pavol Loffay
