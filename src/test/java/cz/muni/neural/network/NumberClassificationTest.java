@@ -38,6 +38,7 @@ public class NumberClassificationTest {
                 .withGradientIterations(ITER)
                 .withRegularize(REGULARIZE)
                 .withRegularizeLambda(LAMBDA)
+                .withClassify(true)
                 .withInputLayer(features)
                 .addLayer(30)
                 .addLastLayer(10);
@@ -50,8 +51,8 @@ public class NumberClassificationTest {
         /**
          * test
          */
-        List<LabeledPoint> testPoints = MNISTReader.read(TestUtils.IMAGES_TRAIN_PATH,
-                TestUtils.LABELS_TRAIN_PATH, TEST);
+        List<LabeledPoint> testPoints = MNISTReader.read(TestUtils.IMAGES_TEST_PATH,
+                TestUtils.LABELS_TEST_PATH, TEST);
 
         int ok = 0;
         for (LabeledPoint labeledPoint: testPoints) {

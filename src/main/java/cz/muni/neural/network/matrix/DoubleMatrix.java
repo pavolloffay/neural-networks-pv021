@@ -54,6 +54,10 @@ public class DoubleMatrix {
     public void setByIndex(double value, int row, int col) {
         this.data[row][col] = value;
     }
+    
+    public double[] getRow(int row) {
+        return data[row];
+    }
 
     public DoubleMatrix transpose() {
         double[][] result = new double[numberOfColumns][numberOfRows];

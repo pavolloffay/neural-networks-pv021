@@ -22,5 +22,16 @@ public class Functions {
             return (1.0 / (1.0 + Math.exp(-x))) * (1 - (1.0 / (1.0 + Math.exp(-x))));
         }
     }
+    
+    /**
+     * Inverse sigmoid
+     */
+    public static class Logit implements Function<Double, Double> {
+
+        @Override
+        public Double apply(Double x) {
+            return -Math.log((1/x) - 1);
+        }
+    }
 
 }

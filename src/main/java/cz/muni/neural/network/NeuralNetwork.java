@@ -27,6 +27,7 @@ public class NeuralNetwork {
     private final long gradientNumberOfIter;
     private final boolean regularize;
     private final double lambdaRegul;
+    private final boolean classify;
     private final Function<Double, Double> hypothesis;
     private final Function<Double, Double> hypothesisDer;
 
@@ -34,7 +35,7 @@ public class NeuralNetwork {
 
 
     private NeuralNetwork(List<Layer> layers, double gradientAlpha, long gradientNumberOfIter, boolean regularize,
-                         double lambdaRegul,
+                         double lambdaRegul, boolean classify,
                           Function<Double, Double> hypothesis, Function<Double, Double> hypothesisDer) {
         this.layers = layers;
         this.numOfLayers = layers.size();
@@ -42,6 +43,7 @@ public class NeuralNetwork {
         this.gradientNumberOfIter = gradientNumberOfIter;
         this.regularize = regularize;
         this.lambdaRegul = lambdaRegul;
+        this.classify = classify;
         this.hypothesis = hypothesis;
         this.hypothesisDer = hypothesisDer;
 
@@ -77,8 +79,9 @@ public class NeuralNetwork {
                 this.thetas.set(layer, theta);
             }
 
-            // TODO print the cost here
-            System.out.println("Gradient iteration = " + i);
+            //vypisujeme chybu pouze u kazde 5. iterace
+            String cost = i % 5 == 0 ? ", error = " + computeCost(labeledPoints) : "";
+            System.out.println("Gradient iteration = " + i + cost);
         }
     }
 
@@ -206,7 +209,7 @@ public class NeuralNetwork {
 
         double[][] arr = new double[numberOfClasses][1];
         
-        if (numberOfClasses > 1) {
+        if (classify) {
             //classification
             for (int col = 0; col < numberOfClasses; col++) {
                 arr[col][0] = labeledPoint.getLabel() == col ? 1D : 0D;
@@ -242,12 +245,33 @@ public class NeuralNetwork {
         return thetasReturn;
     }
 
-    // TODO
     private double computeCost(List<LabeledPoint> labeledPoints) {
-
-        ForwardPropagationResult forwardPropagationResult = forwardPropagation(labeledPoints);
-
-        double cost = 1 / labeledPoints.size();
+        
+        int points = labeledPoints.size();
+        int numberOfClasses = layers.get(layers.size() -1).getNumberOfUnits();
+        double cost = 0;
+                
+        if (numberOfClasses > 1) {
+            //classification
+            int ok = 0;
+            for (LabeledPoint lp : labeledPoints) {
+                Result r = predict(lp);
+                if (lp.getLabel() == r.getMaxIndex()) {
+                    ok++;
+                }
+            }
+            cost = 1 - (ok / (double)points);
+        } else {
+            //prediction
+            ForwardPropagationResult forwardPropagationResult = forwardPropagation(labeledPoints);
+            double[] labels = new double[points];
+        
+            for (int i = 0; i < points; i++) {
+                labels[i] = labeledPoints.get(i).getLabel();
+            }
+            cost = Utils.rmse(forwardPropagationResult.getLastActivation().getRow(0), labels);
+        }
+        
         return cost;
     }
 
@@ -261,6 +285,8 @@ public class NeuralNetwork {
         private boolean regularize;
         private double regularizeLambda = 1;
 
+        private boolean classify = true;
+        
         private Function<Double, Double> hypothesis = new Functions.Sigmoid();
         private Function<Double, Double> hypothesisDer = new Functions.SigmoidGradient();
 
@@ -282,6 +308,11 @@ public class NeuralNetwork {
 
         public Builder withRegularize(boolean regularize) {
             this.regularize = regularize;
+            return this;
+        }
+        
+        public Builder withClassify(boolean classify) {
+            this.classify = classify;
             return this;
         }
 
@@ -319,17 +350,38 @@ public class NeuralNetwork {
             builder.layers.add(new Layer(units));
             return this;
         }
+        
+        public BuilderLayers addLayers(List<Integer> newLayers) {
+            for (Integer i : newLayers) {
+                builder.layers.add(new Layer(i));
+            }
+            return this;
+        }
 
         public NeuralNetwork addLastLayer(int classesToClassify) {
             builder.layers.add(new Layer(classesToClassify));
 
             return new NeuralNetwork(builder.layers, builder.gradientAlpha,
                     builder.gradientIterations, builder.regularize, builder.regularizeLambda,
-                    builder.hypothesis, builder.hypothesisDer);
+                    builder.classify, builder.hypothesis, builder.hypothesisDer);
         }
     }
 
     public static Builder newBuilder() {
         return new Builder();
+    }
+
+    @Override
+    public String toString() {
+        return "NeuralNetwork{" +
+                "layers=" + layers +
+                ", lambdaRegul=" + lambdaRegul +
+                ", regularize=" + regularize +
+                ", classify=" + classify +
+                ", hypothesis=" + hypothesis +
+                ", hypothesisDer=" + hypothesisDer +
+                ", gradientAlpha=" + gradientAlpha +
+                ", gradientNumberOfIter=" + gradientNumberOfIter +
+                '}';
     }
 }
