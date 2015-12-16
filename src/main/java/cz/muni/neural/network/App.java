@@ -54,7 +54,7 @@ public class App {
     private static void OHLCEBaseline(CliArgumentsParser.Params params) throws IOException {
 
         int testSize = params.getSizeTest() == null ? 70000 : params.getSizeTest().intValue();
-        int period = params.getPeriod() == null ? 20 : params.getPeriod();
+        int period = params.getPeriod() == null ? 60 : params.getPeriod();
         String file = params.getTestFile() == null ? TestUtils.OHLC_PATH : params.getTestFile();
 
         List<LabeledPoint> testPoints = OHLCReader.read(file, FEATURES, testSize, true, period);
@@ -85,12 +85,12 @@ public class App {
     private static void OHLCExperiment(CliArgumentsParser.Params params) throws IOException {
 
         int trainSize = params.getSizeTrain() == null ? 280000 : params.getSizeTrain().intValue();
-        int testSize = params.getSizeTest() == null ? 70000 : params.getSizeTest().intValue();
-        int[] layers = params.getLayers() == null ? new int[]{} : params.getLayers();
-        int period = params.getPeriod() == null ? 20 : params.getPeriod();
+        int testSize = params.getSizeTest() == null ? 69000 : params.getSizeTest().intValue();
+        int[] layers = params.getLayers() == null ? new int[]{ 15, 1 } : params.getLayers();
+        int period = params.getPeriod() == null ? 60 : params.getPeriod();
         String file = params.getTestFile() == null ? TestUtils.OHLC_PATH : params.getTestFile();
 
-        int features = 4;
+        int features = 20;
         NeuralNetwork neuralNetwork = buildNeuralNetworkWithLayers(features, layers, params.getNetworkBuilder());
 
         List<LabeledPoint> allPoints = OHLCReader.read(file, features, trainSize + testSize, true, period);

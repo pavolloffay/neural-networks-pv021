@@ -43,7 +43,7 @@ public class CliArgumentsParser {
                 .hasArg().desc("gradient descent learning rate").build());
         options.addOption(Option.builder("n").type(Long.class)
                 .hasArg().desc("number of gradient descent iterations").build());
-
+        
         // regularization
         options.addOption(Option.builder("lambda").type(Long.class)
                 .hasArg().desc("regularization lambda").build());
@@ -64,7 +64,7 @@ public class CliArgumentsParser {
 
         // period
         options.addOption(Option.builder("period").type(Long.class)
-                .hasArg().desc("network architecture, first layer is input, last output").build());
+                .hasArg().desc("period of OHLC data in seconds").build());
 
         options.addOption(Option.builder("h")
                 .desc("Help").build());
@@ -92,9 +92,9 @@ public class CliArgumentsParser {
 
             resultParams.numbers = true;
         } else {
-            // TODO consult with VENA
-            resultParams.networkBuilder.withGradientAlpha(0.1)
-                   .withGradientIterations(200);
+            resultParams.networkBuilder.withGradientAlpha(1)
+                   .withGradientIterations(150)
+                   .withClassify(false);
 
             resultParams.numbers = false;
         }
