@@ -6,9 +6,6 @@ Project for course PV021 Neural Networks  in Masaryk University Faculty of Infor
 Multi layer neural network. Learning is done by backpropagation and gradient descent.
 Repository includes learning of hand written digits from MNIST database.
 
-== Documentation
-https://docs.google.com/document/d/1ec-7cBOFMxyLt-wo_CgVs2TozTeMI1rL4uRjvPSS_u0/edit?usp=sharing[Google Docs]
-
 == Dependencies
 JDK 8, Maven
 
